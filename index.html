@@ -1,29 +1,693 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="GreenVLA - Coming Soon">
-    <title>GreenVLA</title>
-    <link rel="stylesheet" href="style.css">
+
+    <title>Green-VLA: Staged Vision–Language–Action Model for Generalist Robots</title>
+
+    <meta name="description" content="A staged Vision-Language-Action framework for real-world deployment on humanoid robots with generalization across diverse embodiments">
+    <meta name="keywords" content="robotics, vision-language-action, VLA, humanoid robots, reinforcement learning, multi-embodiment, manipulation">
+    <meta name="author" content="Sber Robotics Center, Manipulation Team">
+
+    <meta property="og:title" content="Green-VLA: Staged Vision–Language–Action Model for Generalist Robots">
+    <meta property="og:description" content="A staged Vision-Language-Action framework for humanoid robots">
+    <meta property="og:type" content="website">
+    <!-- <meta property="og:image" content="assets/images/teaser.jpg"> -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
+    <nav>
+        <div class="nav-content">
+            <a href="#overview">Overview</a>
+            <a href="#abstract">Abstract</a>
+            <a href="#method-overview">Method Overview</a>
+            <a href="#results">Results</a>
+            <a href="#citation">Citation</a>
+        </div>
+    </nav>
+
     <div class="container">
-        <header>
-            <h1>GreenVLA</h1>
-            <p class="subtitle">Coming Soon</p>
-        </header>
+        <section id="overview" class="hero">
+            <h1 class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></h1>
+            <h2 class="subtitle">Staged Vision–Language–Action Model for Generalist Robots</h2>
 
-        <main>
-            <section class="content">
-                <h2>Something Delicious is Cooking...</h2>
-                <p>We're preparing something special for you. Stay tuned!</p>
-            </section>
-        </main>
+            <div class="institutions">
+                <div class="institution-placeholder">Manipulation Team<br>Sber Robotics Center · February 2026</div>
+            </div>
 
-        <footer>
-            <p>&copy; 2026 GreenVLA</p>
-        </footer>
+            <div class="links">
+                <a href="https://arxiv.org/abs/2602.00919">📄 Paper</a>
+                <a>💻 Code (Coming soon)</a>
+                <a href="#citation">📝 BibTeX</a>
+            </div>
+
+            <div class="teaser">
+                <video autoplay loop muted playsinline>
+                    <source src="assets/videos/aij_teaser.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+
+        <section id="abstract" class="abstract">
+            <h2>Abstract</h2>
+            <p>
+            We introduce <b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span></b>, a staged Vision–Language–Action framework for real-world deployment on the humanoid <b>Green</b> robot, while maintaining generalization across diverse embodiments. <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> follows a five-stage curriculum: (L0) foundational VLMs, (L1) multimodal grounding, (R0) multi-embodiment pretraining, (R1) embodiment-specific adaptation, and (R2) RL-based policy alignment. Progression builds semantic and physical priors, learns shared affordances, and aligns policies for long-horizon execution beyond behavior cloning. At its core is a unified data and control stack for robot fleets.
+            </p>
+
+            <p>
+            A scalable data-processing pipeline including DataQA and temporal-alignment filters and synchronizes 3,000 hours of demonstrations; a unified, embodiment-aware action interface enables a single policy to control humanoids, mobile manipulators, and fixed-base arms; and the VLA controller is enhanced with episode-progress prediction, out-of-distribution detection, and a joint-prediction-based guidance module that generalizes to unseen objects. Optimized for the Green humanoid, <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> generalizes in a zero-shot manner to new embodiments and achieves state-of-the-art performance across bimanual systems and benchmarks, with RL alignment providing gains in success rate, robustness, and long-horizon efficiency.
+            </p>
+
+        </section>
+
+        <section id="method-overview" class="method-overview">
+            <h2>Method Overview</h2>
+            
+            <img class="full-width-img" src="assets/images/GreenVLA_Pipeline.svg" alt="Green-VLA architecture">
+            
+            <p>
+            <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> is a ~4B-parameter Vision-Language-Action model. We use PaliGemma (3B) as the vision–language backbone, augmented with a dedicated flow-matching action expert and lightweight auxiliary heads. The architecture features:
+            </p>
+            <ul>
+            <li><b>Unified Action Space (64D):</b> Semantic layout with embodiment masks → enables <span class="impact-metric">zero-shot cross-robot transfer</span> without spurious gradients from padding.</li>
+            <li><b>Task Planner:</b> High-level VLM decomposes user goals into atomic subtasks → achieves <span class="impact-metric">long-horizon instruction following</span> with adaptive replanning.</li>
+            <li><b>DataQA Pipeline:</b> Auto-filters 3,000+ hours using jitter, sharpness, diversity, and state variance metrics + optical-flow alignment → <span class="impact-metric">stable multi-embodiment training</span> with improved data efficiency.</li>
+            <li><b>Episode Progress & OOD Detection:</b> Real-time task state monitoring → <span class="impact-metric">safe recovery</span> from unfamiliar configurations, prevents catastrophic failures.</li>
+            <li><b>JPM + Guidance:</b> Training-free 3D target prediction + flow-matching steering → <span class="impact-metric">36%→93%</span> SKU-level accuracy, <span class="impact-metric">10%→72%</span> on OOD items.</li>
+            <li><b>RL Alignment (R2):</b> Trajectory optimization + source distribution tuning → <span class="impact-metric">+10-52% SR gain</span> on challenging tasks, longer average chain length compared with behavior cloning.</li>
+            </ul>
+            <p>
+            The training follows a staged curriculum: (L0) base VLM → (L1) web/multimodal pretraining for physical world understanding → (R0) general robotics pretraining on 3,000+ hours of demonstrations → (R1) embodiment-specific supervised fine-tuning → (R2) RL-based policy alignment. This progression builds semantic priors, learns shared affordances, and aligns policies for robust real-world execution.
+            </p>
+        
+        </section>
+
+        <section id="results">
+            <h2>Results</h2>
+            <ul>
+            <li><b>ALOHA table cleaning (R0, no extra SFT):</b> <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> achieves 83.1% success rate on tape, 52.1% on screwdrivers, 63.7% on pliers, and 69.5% first-item SR with an average completion time of 1m35s—outperforming π<sub>0</sub> (2m59s), Agibot GO-1 (3m57s), and other baselines trained with additional finetuning.</li>
+            <li><b>SimplerEnv (Google Robot & WidowX):</b> R0 <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> achieves 60.2% average success on Google Robot tasks (vs. π<sub>0</sub> pretrain 6.39%, π<sub>0</sub> finetune 56.8%) and 45.0% on WidowX pick tasks at R0; R1 improves to 55.2%, and R2 RL alignment reaches 79.1% overall success.</li>
+            <li><b>CALVIN:</b> R1 <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> reaches 4.18 ACL (vs. π<sub>0</sub> 3.6 ACL); R2 RL alignment pushes ACL to 4.62, demonstrating superior long-horizon task execution and error recovery.</li>
+            <li><b>Humanoid (Green Robot):</b> Full upper-body control (head, torso, dual arms, dexterous hands) with instruction-conditioned pick, place, basket retrieval, hand-over, and fruit sorting. Achieves robust task following and multi-step coordination in both in-domain and OOD scene layouts.</li>
+            <li><b>E-Commerce (JPM+Guidance):</b> SKU-level shelf picking improves from 36% (base) to 93% (with guidance) on in-domain exact-variant tasks, and from 10% to 72% on out-of-distribution unseen SKUs, demonstrating precise object targeting in dense visual environments.</li>
+            </ul>
+
+            <br>
+            
+            <p style="text-align: center; color: var(--text-muted);">
+                Below are example results demonstrating our method on various scenes.
+            </p>
+
+            <div class="results-grid">
+
+                <!-- Video Item-->
+                <div class="video-item">
+                    <video autoplay loop muted playsinline controls>
+                        <source src="assets/videos/crab_small.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="caption">Aloha Inference</div>
+                </div>
+
+                <!-- Video Item 4 -->
+                <div class="video-item">
+                    <video autoplay loop muted playsinline controls>
+                        <source src="assets/videos/inference_giftbox.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="caption">Humanoid Inference</div>
+                </div>
+            </div>
+
+            <br>
+            <br>
+
+            <h2>Benchmark Results Summary (Models × Datasets)</h2>
+
+            <!-- <br>
+
+            <div class="img-wrap" style="text-align: center;">
+                <span class="caption" style="display: block; text-align: center; font-weight: bold; margin-bottom: 6px; color: var(--text-color); font-size: 16px;">CALVIN Benchmark Results: Average Chain Length (ACL)</span>
+                <img src="assets/images/RL_Right2.pdf" alt="" style="max-width: 95%; height: auto;">
+            </div>
+
+            <br> -->
+            <br>
+
+            <h3>SimplerEnv: Google Robot Tasks</h3>
+            <table style="border-collapse: collapse; width: 95%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
+                <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color);">
+                    SimplerEnv evaluation across different policies on Google Robot tasks for default number of Simpler episode steps
+                </caption>
+                <thead>
+                    <tr>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Model</th>
+                        <th colspan="4" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Visual Matching</th>
+                        <th colspan="4" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Variant Aggregation</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Overall Avg</th>
+                    </tr>
+                    <tr>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 13px;"></th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Drawer</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Move Near</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Pick Coke</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">AVG VM</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Drawer</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Move Near</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Pick Coke</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">AVG VA</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Average</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;">π<sub>0</sub> (Fine-tune)</td>
+                        <td style="color: var(--text-color); padding: 6px;">38.3</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>65.3</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">72.7</td>
+                        <td style="color: var(--text-color); padding: 6px;">58.8</td>
+                        <td style="color: var(--text-color); padding: 6px;">25.6</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>63.7</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">75.2</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>54.8</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">56.8</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;">OpenVLA</td>
+                        <td style="color: var(--text-color); padding: 6px;">35.6</td>
+                        <td style="color: var(--text-color); padding: 6px;">46.2</td>
+                        <td style="color: var(--text-color); padding: 6px;">16.3</td>
+                        <td style="color: var(--text-color); padding: 6px;">27.7</td>
+                        <td style="color: var(--text-color); padding: 6px;">17.7</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>47.7</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">54.5</td>
+                        <td style="color: var(--text-color); padding: 6px;">39.8</td>
+                        <td style="color: var(--text-color); padding: 6px;">33.8</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;">RT-1-X</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>59.7</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">31.7</td>
+                        <td style="color: var(--text-color); padding: 6px;">56.7</td>
+                        <td style="color: var(--text-color); padding: 6px;">53.4</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>49.0</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">32.3</td>
+                        <td style="color: var(--text-color); padding: 6px;">29.7</td>
+                        <td style="color: var(--text-color); padding: 6px;">39.6</td>
+                        <td style="color: var(--text-color); padding: 6px;">46.5</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R0)</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>62.9</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>61.2</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>90.4</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>71.4</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">33.5</td>
+                        <td style="color: var(--text-color); padding: 6px;">38.1</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>75.5</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">49.1</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>60.2</b></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R1)</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">47.0</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>58.7</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>95.0</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>66.9</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>34.1</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">42.9</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>92.1</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>56.3</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>61.3</b></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R2)</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>61.0</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">50.8</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>98.1</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>69.9</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>51.6</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>71.2</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>98.2</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>73.7</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>71.8</b></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br>
+            <br>
+
+            <h3>SimplerEnv: WidowX Robot Tasks</h3>
+            <table style="border-collapse: collapse; width: 95%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
+                <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color);">
+                    SimplerEnv WidowX Evaluation: Pick Tasks & Success Rates (R0→R1→R2 progression)
+                </caption>
+                <thead>
+                    <tr>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Model</th>
+                        <th colspan="5" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Grasp Success</th>
+                        <th colspan="5" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Task Success</th>
+                    </tr>
+                    <tr>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 13px;"></th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Spoon</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Cubes</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Eggplant</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Carrot</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">AVG</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Spoon</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Cubes</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Eggplant</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Carrot</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">AVG</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;">π<sub>0</sub> (Finetune)</td>
+                        <td style="color: var(--text-color); padding: 6px;">45.8</td>
+                        <td style="color: var(--text-color); padding: 6px;">50.0</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">91.6</td>
+                        <td style="color: var(--text-color); padding: 6px;">25.0</td>
+                        <td style="color: var(--text-color); padding: 6px;">53.1</td>
+                        <td style="color: var(--text-color); padding: 6px;">29.1</td>
+                        <td style="color: var(--text-color); padding: 6px;">16.7</td>
+                        <td style="color: var(--text-color); padding: 6px;">62.5</td>
+                        <td style="color: var(--text-color); padding: 6px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 6px;">27.1</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;">DB-MemVLA</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>91.7</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">83.3</td>
+                        <td style="color: var(--text-color); padding: 6px;">79.2</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>100</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">88.6</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">85.1</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>57.6</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>100</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">50.0</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">73.2</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R0)</b></td>
+                        <td style="color: var(--text-color); padding: 6px;">66.7</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">91.7</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>91.7</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">50.0</td>
+                        <td style="color: var(--text-color); padding: 6px;">75.0</td>
+                        <td style="color: var(--text-color); padding: 6px;">33.3</td>
+                        <td style="color: var(--text-color); padding: 6px;">33.3</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">88.5</td>
+                        <td style="color: var(--text-color); padding: 6px;">25.0</td>
+                        <td style="color: var(--text-color); padding: 6px;">45.0</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R1)</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">75.0</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">91.7</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">87.5</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">50.0</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">76.1</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">66.7</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">37.5</td>
+                        <td style="color: var(--text-color); padding: 6px;">79.2</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">37.5</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">55.2</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R2)</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">87.5</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>95.8</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>91.7</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>91.6</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;">91.7</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>90.1</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">52.6</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">84.8</td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>89.0</b></td>
+                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>79.1</b></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br>
+            <br>
+
+            <h3>CALVIN Benchmark: Average Chain Length</h3>
+            <table style="border-collapse: collapse; width: 70%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
+                <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color);">
+                    CALVIN ABC→D: Average Chain Length (ACL) Comparison
+                </caption>
+                <thead>
+                    <tr>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Metric</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">π<sub>0</sub> R1</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> R1</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Flower R1</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> R2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 8px; font-weight: bold;">ACL</td>
+                        <td style="color: var(--text-color); padding: 8px;">3.6</td>
+                        <td style="color: var(--text-color); padding: 8px; background: #EBF4FF;">4.18</td>
+                        <td style="color: var(--text-color); padding: 8px; background: #D6D4FF;">4.53</td>
+                        <td style="color: var(--text-color); padding: 8px; background: #63D3B0;"><b>4.63</b></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br>
+            <br>
+
+            <h3>Humanoid (Green Robot): Task Success Rates</h3>
+            <table style="border-collapse: collapse; width: 95%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
+                <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color);">
+                    Humanoid instruction-conditioned manipulation success rates (%)
+                </caption>
+                <thead>
+                    <tr>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Pick [item]</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Place in [basket]</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Pick [item] from [basket]</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Give [item] to user</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Hand over [item]</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Clean full [table]</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px; font-weight: bold;">Average</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 8px;">98</td>
+                        <td style="color: var(--text-color); padding: 8px;">100</td>
+                        <td style="color: var(--text-color); padding: 8px;">77</td>
+                        <td style="color: var(--text-color); padding: 8px;">99</td>
+                        <td style="color: var(--text-color); padding: 8px;">84</td>
+                        <td style="color: var(--text-color); padding: 8px;">87</td>
+                        <td style="color: var(--text-color); padding: 8px;">90</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br>
+
+            <h3>E-Commerce: RL Alignment (R1 → R2)</h3>
+            <table style="border-collapse: collapse; width: 60%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
+                <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color);">
+                    Success Rates for Challenging E-Commerce Items
+                </caption>
+                <thead>
+                    <tr>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Item</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">R1 Success</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">R2 Success</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Gain</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 8px;">Cookies</td>
+                        <td style="color: var(--text-color); padding: 8px;">30%</td>
+                        <td style="color: var(--text-color); padding: 8px;"><b>82%</b></td>
+                        <td style="color: var(--text-color); padding: 8px;"><span style="color: #1EB980;">+52%</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 8px;">Deodorant</td>
+                        <td style="color: var(--text-color); padding: 8px;">62%</td>
+                        <td style="color: var(--text-color); padding: 8px;"><b>88%</b></td>
+                        <td style="color: var(--text-color); padding: 8px;"><span style="color: #1EB980;">+26%</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 8px;">Shampoo</td>
+                        <td style="color: var(--text-color); padding: 8px;">12%</td>
+                        <td style="color: var(--text-color); padding: 8px;"><b>22%</b></td>
+                        <td style="color: var(--text-color); padding: 8px;"><span style="color: #1EB980;">+10%</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 8px;">Pet food</td>
+                        <td style="color: var(--text-color); padding: 8px;">25%</td>
+                        <td style="color: var(--text-color); padding: 8px;"><b>68%</b></td>
+                        <td style="color: var(--text-color); padding: 8px;"><span style="color: #1EB980;">+43%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br>
+            <br>
+
+            <h3>E-Commerce: JPM + Guidance Impact</h3>
+            <table style="border-collapse: collapse; width: 60%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
+                <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color);">
+                    E-Commerce Shelf Picking: Top-1 Success Rate (%)
+                </caption>
+                <thead>
+                    <tr>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Metric</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Base</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">+ Guidance</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Gain</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 8px;">ID Coarse</td>
+                        <td style="color: var(--text-color); padding: 8px;">62</td>
+                        <td style="color: var(--text-color); padding: 8px;"><b>95</b></td>
+                        <td style="color: var(--text-color); padding: 8px;"><span style="color: #1EB980;">+33</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 8px;">ID SKU</td>
+                        <td style="color: var(--text-color); padding: 8px;">36</td>
+                        <td style="color: var(--text-color); padding: 8px;"><b>93</b></td>
+                        <td style="color: var(--text-color); padding: 8px;"><span style="color: #1EB980;">+57</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 8px;">OOD</td>
+                        <td style="color: var(--text-color); padding: 8px;">10</td>
+                        <td style="color: var(--text-color); padding: 8px;"><b>72</b></td>
+                        <td style="color: var(--text-color); padding: 8px;"><span style="color: #1EB980;">+62</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br>
+
+            <!-- <div class="figure compact">
+                <div class="legend">
+                    <span><i class="chip" style="background:var(--c1)"></i>π<sub>0</sub> (R1)</span>
+                    <span><i class="chip" style="background:var(--c3)"></i><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R1)</span>
+                    <span><i class="chip" style="background:var(--c4)"></i><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R2)</span>
+                </div>
+                <table class="table">
+                    <colgroup>
+                        <col style="width:var(--firstcol)">
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Success Rate (%)</th>
+                            <th>Avg Chain Length</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>π<sub>0</sub></th>
+                            <td>
+                                <div class="cell" title="86.6% SR"><span class="fill"
+                                        style="--v:86.6;--color:var(--c1)"></span><span class="val">86.6</span></div>
+                            </td>
+                            <td>
+                                <div class="cell" title="3.6 ACL"><span class="fill"
+                                        style="--v:72;--color:var(--c1)"></span><span class="val">3.6</span></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> R1</th>
+                            <td>
+                                <div class="cell" title="91.5% SR"><span class="fill"
+                                        style="--v:91.5;--color:var(--c3)"></span><span class="val">91.5</span></div>
+                            </td>
+                            <td>
+                                <div class="cell" title="4.18 ACL"><span class="fill"
+                                        style="--v:83.6;--color:var(--c3)"></span><span class="val">4.18</span></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> R2</th>
+                            <td>
+                                <div class="cell" title="95.3% SR"><span class="fill"
+                                        style="--v:95.3;--color:var(--c4)"></span><span class="val">95.3</span></div>
+                            </td>
+                            <td>
+                                <div class="cell" title="4.52 ACL"><span class="fill"
+                                        style="--v:90.4;--color:var(--c4)"></span><span class="val">4.52</span></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="caption">CALVIN benchmark: Green-VLA R2 (RL alignment) achieves the highest success rate and longest average chain length, demonstrating superior long-horizon task execution.</p>
+            </div>
+
+            <br>
+
+            <!-- ===== ALOHA Table-Cleaning Results ===== -->
+            <!-- ALOHA Table-Cleaning Visualization (commented out)
+            <div class="figure compact">
+                <h2>ALOHA Table-Cleaning — Subtasks (Success Rate) & Avg Time</h2>
+                <div class="legend">
+                    <span><i class="chip" style="background:var(--c1)"></i>π₀</span>
+                    <span><i class="chip" style="background:var(--c2)"></i>Agibot GO-1</span>
+                    <span><i class="chip" style="background:var(--c3)"></i>Groot N1</span>
+                    <span><i class="chip" style="background:var(--c4)"></i><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R0)</span>
+                </div>
+
+                <div class="aloha-grid">
+                    <div class="aloha-col">
+                        <div class="aloha-head">Tape</div>
+                        <div class="cell" title="π₀: 0.4"><span class="fill"
+                                style="--v:40;--color:var(--c1)"></span><span class="badge">π₀</span><span
+                                class="val">0.4</span></div>
+                        <div class="cell" title="Agibot: 0.5"><span class="fill"
+                                style="--v:50;--color:var(--c2)"></span><span class="badge">GO-1</span><span
+                                class="val">0.5</span></div>
+                        <div class="cell" title="Groot: 0.3"><span class="fill"
+                                style="--v:30;--color:var(--c3)"></span><span class="badge">N1</span><span
+                                class="val">0.3</span></div>
+                        <div class="cell" title="Green-VLA: 0.8"><span class="fill"
+                                style="--v:80;--color:var(--c4)"></span><span class="badge"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span></span><span
+                                class="val">0.8</span></div>
+                    </div>
+
+                    <div class="aloha-col">
+                        <div class="aloha-head">Screwdrivers</div>
+                        <div class="cell" title="π₀: 0.2"><span class="fill"
+                                style="--v:20;--color:var(--c1)"></span><span class="badge">π₀</span><span
+                                class="val">0.2</span></div>
+                        <div class="cell" title="Agibot: 0.4"><span class="fill"
+                                style="--v:40;--color:var(--c2)"></span><span class="badge">GO-1</span><span
+                                class="val">0.4</span></div>
+                        <div class="cell" title="Groot: 0.3"><span class="fill"
+                                style="--v:30;--color:var(--c3)"></span><span class="badge">N1</span><span
+                                class="val">0.3</span></div>
+                        <div class="cell" title="Green-VLA: 0.5"><span class="fill"
+                                style="--v:50;--color:var(--c4)"></span><span class="badge"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span></span><span
+                                class="val">0.5</span></div>
+                    </div>
+
+                    <div class="aloha-col">
+                        <div class="aloha-head">Pliers</div>
+                        <div class="cell" title="π₀: 0.2"><span class="fill"
+                                style="--v:20;--color:var(--c1)"></span><span class="badge">π₀</span><span
+                                class="val">0.2</span></div>
+                        <div class="cell" title="Agibot: 0.2"><span class="fill"
+                                style="--v:20;--color:var(--c2)"></span><span class="badge">GO-1</span><span
+                                class="val">0.2</span></div>
+                        <div class="cell" title="Groot: 0.2"><span class="fill"
+                                style="--v:20;--color:var(--c3)"></span><span class="badge">N1</span><span
+                                class="val">0.2</span></div>
+                        <div class="cell" title="Green-VLA: 0.6"><span class="fill"
+                                style="--v:60;--color:var(--c4)"></span><span class="badge"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span></span><span
+                                class="val">0.6</span></div>
+                    </div>
+
+                    <div class="aloha-col">
+                        <div class="aloha-head">First item SR</div>
+                        <div class="cell" title="π₀: 0.3"><span class="fill"
+                                style="--v:30;--color:var(--c1)"></span><span class="badge">π₀</span><span
+                                class="val">0.3</span></div>
+                        <div class="cell" title="Agibot: 0.3"><span class="fill"
+                                style="--v:30;--color:var(--c2)"></span><span class="badge">GO-1</span><span
+                                class="val">0.3</span></div>
+                        <div class="cell" title="Groot: 0.3"><span class="fill"
+                                style="--v:30;--color:var(--c3)"></span><span class="badge">N1</span><span
+                                class="val">0.3</span></div>
+                        <div class="cell" title="Green-VLA: 0.6"><span class="fill"
+                                style="--v:60;--color:var(--c4)"></span><span class="badge"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span></span><span
+                                class="val">0.6</span></div>
+                    </div>
+
+                    <div class="aloha-col">
+                        <div class="aloha-head">Avg time (s)</div>
+                        <div class="cell" title="π₀: 179 s"><span class="fill"
+                                style="--v:59.7;--color:var(--c1)"></span><span class="badge">π₀</span><span
+                                class="val">179</span></div>
+                        <div class="cell" title="Agibot: 237 s"><span class="fill"
+                                style="--v:79;--color:var(--c2)"></span><span class="badge">GO-1</span><span
+                                class="val">237</span></div>
+                        <div class="cell" title="Groot: >300 s"><span class="fill"
+                                style="--v:100;--color:var(--c3)"></span><span class="badge">N1</span><span
+                                class="val">>300</span></div>
+                        <div class="cell" title="Green-VLA: 95 s"><span class="fill"
+                                style="--v:31.7;--color:var(--c4)"></span><span class="badge"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span></span><span
+                                class="val">95</span></div>
+                    </div>
+                </div>
+
+                <p class="caption">ALOHA table-cleaning results (R0 phase, no additional finetuning). Green-VLA achieves the highest success rates across all subtasks and completes table cleaning 1.9× faster than π₀ and 2.5× faster than Agibot GO-1. Time scaled relative to 300s (lower is better).</p>
+            </div>
+            --> 
+
+        </section>
+
+
+        <section id="citation" class="bibtex-section">
+            <h2 style="text-align: center;">Citation</h2>
+
+            <div class="bibtex-container">
+                <button class="copy-button" id="copyButton">Copy</button>
+                <pre id="bibtexCode">
+@misc{apanasevich2026greenvlastagedvisionlanguageactionmodel,
+      title={Green-VLA: Staged Vision-Language-Action Model for Generalist Robots}, 
+      author={I. Apanasevich and M. Artemyev and R. Babakyan and P. Fedotova and D. Grankin and E. Kupryashin and A. Misailidi and D. Nerus and A. Nutalapati and G. Sidorov and I. Efremov and M. Gerasyov and D. Pikurov and Y. Senchenko and S. Davidenko and D. Kulikov and M. Sultankin and K. Askarbek and O. Shamanin and D. Statovoy and E. Zalyaev and I. Zorin and A. Letkin and E. Rusakov and A. Silchenko and V. Vorobyov and S. Sobolnikov and A. Postnikov},
+      year={2026},
+      eprint={2602.00919},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2602.00919}, 
+}</pre>
+            </div>
+
+            <!-- <div style="margin-top: 3em; padding: 1.5em; background: var(--code-bg); border-radius: 8px;">
+                <h3 style="margin-top: 0;">Contributors</h3>
+                <p style="margin-bottom: 1em;"><em>Authors are listed in alphabetical order.</em></p>
+                
+                <p><strong>VLA:</strong> I.Apanasevich, M.Artemyev, R.Babakyan, P.Fedotova, D.Grankin, E.Kupryashin, A.Misailidi, D.Nerus, A.Nutalapati, G.Sidorov</p>
+                
+                <p><strong>RL fine-tune:</strong> I.Efremov, M.Gerasyov, D.Pikurov, Y.Senchenko</p>
+                
+                <p><strong>Data pipeline:</strong> S.Davidenko, D.Kulikov, M.Sultankin</p>
+                
+                <p><strong>Control:</strong> K.Askarbek, O.Shamanin, D.Statovoy, I.Zorin</p>
+                
+                <p><strong>Data collection:</strong> A.Letkin, E.Rusakov, A.Silchenko, V.Vorobyov</p>
+                
+                <p><strong>Benchmarks:</strong> S.Sobolnikov</p>
+                
+                <p><strong>Project supervisor:</strong> A.Postnikov</p>
+            </div> -->
+        </section>
     </div>
+
+    <footer>
+        <p>© 2026 Sber Robotics Center</p>
+        <p>Manipulation team</p>
+    </footer>
+
+    <script src="js/script.js"></script>
 </body>
+
 </html>
