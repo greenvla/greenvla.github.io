@@ -56,7 +56,8 @@
             <div class="links">
                 <a href="https://arxiv.org/abs/2602.00919">📄 Paper</a>
                 <a href="https://huggingface.co/papers/2602.00919">🤗 Hugging Face</a>
-                <a>💻 Code (Coming soon)</a>
+                <a href="https://huggingface.co/collections/SberRoboticsCenter/greenvla">🤗 Hugging Face Models</a>
+                <a href="https://github.com/greenvla/GreenVLA">💻 Code</a>
                 <a href="#citation">📝 BibTeX</a>
             </div>
 
@@ -86,7 +87,7 @@
             <img class="full-width-img" src="assets/images/GreenVLA_Pipeline.svg" alt="Green-VLA architecture">
             
             <p>
-            <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> is a ~4B-parameter Vision-Language-Action model. We use PaliGemma (3B) as the vision–language backbone, augmented with a dedicated flow-matching action expert and lightweight auxiliary heads. The architecture features:
+            <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> is a ~5B-parameter Vision-Language-Action model. We use Qwen3-VL (4B) as the vision–language backbone, augmented with a dedicated flow-matching action expert and lightweight auxiliary heads. The architecture features:
             </p>
             <ul>
             <li><b>Unified Action Space (64D):</b> Semantic layout with embodiment masks → enables <span class="impact-metric">zero-shot cross-robot transfer</span> without spurious gradients from padding.</li>
@@ -155,102 +156,224 @@
             <br>
 
             <h3>SimplerEnv: Google Robot Tasks</h3>
-            <table style="border-collapse: collapse; width: 95%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
-                <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color);">
+            <table style="border-collapse: collapse; width: 100%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px; font-size: 12px;">
+                <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color); font-size: 14px;">
                     SimplerEnv evaluation across different policies on Google Robot tasks for default number of Simpler episode steps
                 </caption>
                 <thead>
                     <tr>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Model</th>
-                        <th colspan="4" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Visual Matching</th>
-                        <th colspan="4" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Variant Aggregation</th>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Overall Avg</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 6px;">Model</th>
+                        <th colspan="5" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 6px;">Visual Matching</th>
+                        <th colspan="5" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 6px;">Variant Aggregation</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 6px;">#Overall</th>
                     </tr>
                     <tr>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 13px;"></th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Drawer</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Move Near</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Pick Coke</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">AVG VM</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Drawer</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Move Near</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Pick Coke</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">AVG VA</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Average</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;"></th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Drawer</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Move near</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Pick Coke</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Apple</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">AVG VM</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Drawer</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Move near</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Pick Coke</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Apple</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">AVG VA</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Average</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;">π<sub>0</sub> (Fine-tune)</td>
-                        <td style="color: var(--text-color); padding: 6px;">38.3</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>65.3</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">72.7</td>
-                        <td style="color: var(--text-color); padding: 6px;">58.8</td>
-                        <td style="color: var(--text-color); padding: 6px;">25.6</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>63.7</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">75.2</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>54.8</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">56.8</td>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">π<sub>0</sub> (Fine-tune)</td>
+                        <td style="color: var(--text-color); padding: 5px;">38.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">65.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">72.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">44.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">25.6</td>
+                        <td style="color: var(--text-color); padding: 5px;">63.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">75.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">41.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">42.6</td>
                     </tr>
                     <tr>
-                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;">OpenVLA</td>
-                        <td style="color: var(--text-color); padding: 6px;">35.6</td>
-                        <td style="color: var(--text-color); padding: 6px;">46.2</td>
-                        <td style="color: var(--text-color); padding: 6px;">16.3</td>
-                        <td style="color: var(--text-color); padding: 6px;">27.7</td>
-                        <td style="color: var(--text-color); padding: 6px;">17.7</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>47.7</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">54.5</td>
-                        <td style="color: var(--text-color); padding: 6px;">39.8</td>
-                        <td style="color: var(--text-color); padding: 6px;">33.8</td>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">π<sub>0.5</sub> (Fine-tune)</td>
+                        <td style="color: var(--text-color); padding: 5px;">57.9</td>
+                        <td style="color: var(--text-color); padding: 5px;">72.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">86.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">54.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">50.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">73.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">87.4</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">52.8</td>
+                        <td style="color: var(--text-color); padding: 5px;">53.6</td>
                     </tr>
                     <tr>
-                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;">RT-1-X</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>59.7</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">31.7</td>
-                        <td style="color: var(--text-color); padding: 6px;">56.7</td>
-                        <td style="color: var(--text-color); padding: 6px;">53.4</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>49.0</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">32.3</td>
-                        <td style="color: var(--text-color); padding: 6px;">29.7</td>
-                        <td style="color: var(--text-color); padding: 6px;">39.6</td>
-                        <td style="color: var(--text-color); padding: 6px;">46.5</td>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">X-VLA</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">64.4</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>84.6</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">93.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">18.5</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">65.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">43.7</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>78.8</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>96.1</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">30.7</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>62.3</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">63.8</td>
                     </tr>
                     <tr>
-                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R0)</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>62.9</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>61.2</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>90.4</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>71.4</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">33.5</td>
-                        <td style="color: var(--text-color); padding: 6px;">38.1</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>75.5</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">49.1</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>60.2</b></td>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">GR00T-N1.6</td>
+                        <td style="color: var(--text-color); padding: 5px;">61.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">73.8</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">95.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">13.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">60.8</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">59.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">68.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">89.6</td>
+                        <td style="color: var(--text-color); padding: 5px;">23.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">60.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">60.5</td>
                     </tr>
                     <tr>
-                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R1)</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">47.0</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>58.7</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>95.0</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>66.9</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;"><b>34.1</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">42.9</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>92.1</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>56.3</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>61.3</b></td>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Magma</td>
+                        <td style="color: var(--text-color); padding: 5px;">62.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">68.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">74.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">13.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">54.5</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>60.3</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">76.9</td>
+                        <td style="color: var(--text-color); padding: 5px;">70.8</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">32.8</td>
+                        <td style="color: var(--text-color); padding: 5px;">60.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">57.4</td>
                     </tr>
                     <tr>
-                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R2)</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>61.0</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">50.8</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>98.1</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>69.9</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>51.6</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>71.2</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>98.2</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>73.7</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>71.8</b></td>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">EO-1</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>71.3</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>83.8</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>98.0</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>52.8</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>76.5</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>91.6</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>81.7</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">55.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">23.8</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>63.0</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>69.8</b></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">OpenVLA</td>
+                        <td style="color: var(--text-color); padding: 5px;">35.6</td>
+                        <td style="color: var(--text-color); padding: 5px;">46.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">16.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">24.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">17.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">47.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">54.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">30.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">27.2</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">RT-1-X</td>
+                        <td style="color: var(--text-color); padding: 5px;">59.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">31.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">56.7</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">40.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">47.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">49.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">32.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">29.7</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>40.7</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">37.9</td>
+                        <td style="color: var(--text-color); padding: 5px;">42.6</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Flower</td>
+                        <td style="color: var(--text-color); padding: 5px;">-</td>
+                        <td style="color: var(--text-color); padding: 5px;">-</td>
+                        <td style="color: var(--text-color); padding: 5px;">-</td>
+                        <td style="color: var(--text-color); padding: 5px;">-</td>
+                        <td style="color: var(--text-color); padding: 5px;">-</td>
+                        <td style="color: var(--text-color); padding: 5px;">--</td>
+                        <td style="color: var(--text-color); padding: 5px;">--</td>
+                        <td style="color: var(--text-color); padding: 5px;">--</td>
+                        <td style="color: var(--text-color); padding: 5px;">--</td>
+                        <td style="color: var(--text-color); padding: 5px;">--</td>
+                        <td style="color: var(--text-color); padding: 5px;">42.4</td>
+                    </tr>
+                    <tr>
+                        <td colspan="12" style="color: var(--text-color); padding: 6px; padding-left: 15px; font-size: 12px; text-align: left; font-weight: bold; border-top: 1px solid var(--border-color);">
+                            <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-style: italic;">(Paligemma 3B)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Green-VLA(R0)</td>
+                        <td style="color: var(--text-color); padding: 5px;">62.9</td>
+                        <td style="color: var(--text-color); padding: 5px;">61.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">90.4</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">53.6</td>
+                        <td style="color: var(--text-color); padding: 5px;">33.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">38.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">75.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">36.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">45.1</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Green-VLA(R1)</td>
+                        <td style="color: var(--text-color); padding: 5px;">47.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">58.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">95.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">50.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">34.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">42.9</td>
+                        <td style="color: var(--text-color); padding: 5px;">92.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">16.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">46.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">48.1</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Green-VLA(R2)</td>
+                        <td style="color: var(--text-color); padding: 5px;">61.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">50.8</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>98.1</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">52.4</td>
+                        <td style="color: var(--text-color); padding: 5px;">51.6</td>
+                        <td style="color: var(--text-color); padding: 5px;">71.2</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>98.2</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">28.0</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">62.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">57.3</td>
+                    </tr>
+                    <tr>
+                        <td colspan="12" style="color: var(--text-color); padding: 6px; padding-left: 15px; font-size: 12px; text-align: left; font-weight: bold; border-top: 1px solid var(--border-color);">
+                            <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-style: italic;">(Qwen3-VL-4B-Instruct)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Green-VLA(R1)</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>64.8</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">75.8</td>
+                        <td style="color: var(--text-color); padding: 5px;">85.7</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>81.5</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>77.0</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">35.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">71.9</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">92.6</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>66.7</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>66.7</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>71.8</b></td>
                     </tr>
                 </tbody>
             </table>
@@ -259,95 +382,235 @@
             <br>
 
             <h3>SimplerEnv: WidowX Robot Tasks</h3>
-            <table style="border-collapse: collapse; width: 95%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
-                <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color);">
-                    SimplerEnv WidowX Evaluation: Pick Tasks & Success Rates (R0→R1→R2 progression)
+            <table style="border-collapse: collapse; width: 100%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px; font-size: 12px;">
+                <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color); font-size: 14px;">
+                    SimplerEnv evaluation across different policies on WidowX Robot tasks
                 </caption>
                 <thead>
                     <tr>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Model</th>
-                        <th colspan="5" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Grasp Success</th>
-                        <th colspan="5" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 8px;">Task Success</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 6px;">Model</th>
+                        <th colspan="5" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 6px;">Pick</th>
+                        <th colspan="5" style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 6px;">Success</th>
                     </tr>
                     <tr>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 13px;"></th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Spoon</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Cubes</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Eggplant</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Carrot</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">AVG</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Spoon</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Cubes</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Eggplant</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">Carrot</th>
-                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 6px; font-size: 12px;">AVG</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;"></th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Spoon</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Cubes</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Eggplant</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Carrot</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">AVG Grasp</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Spoon</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Cubes</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Eggplant</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">Carrot</th>
+                        <th style="border-bottom: 1px solid var(--border-color); color: var(--text-color); padding: 4px; font-size: 11px;">AVG Success</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;">π<sub>0</sub> (Finetune)</td>
-                        <td style="color: var(--text-color); padding: 6px;">45.8</td>
-                        <td style="color: var(--text-color); padding: 6px;">50.0</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">91.6</td>
-                        <td style="color: var(--text-color); padding: 6px;">25.0</td>
-                        <td style="color: var(--text-color); padding: 6px;">53.1</td>
-                        <td style="color: var(--text-color); padding: 6px;">29.1</td>
-                        <td style="color: var(--text-color); padding: 6px;">16.7</td>
-                        <td style="color: var(--text-color); padding: 6px;">62.5</td>
-                        <td style="color: var(--text-color); padding: 6px;">0.0</td>
-                        <td style="color: var(--text-color); padding: 6px;">27.1</td>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">π<sub>0</sub> (Fine-tune)</td>
+                        <td style="color: var(--text-color); padding: 5px;">45.8</td>
+                        <td style="color: var(--text-color); padding: 5px;">50.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">91.6</td>
+                        <td style="color: var(--text-color); padding: 5px;">25.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">53.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">29.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">16.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">62.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">27.1</td>
                     </tr>
                     <tr>
-                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;">DB-MemVLA</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>91.7</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">83.3</td>
-                        <td style="color: var(--text-color); padding: 6px;">79.2</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>100</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">88.6</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">85.1</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>57.6</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>100</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">50.0</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">73.2</td>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">π<sub>0.5</sub> (Fine-tune)</td>
+                        <td style="color: var(--text-color); padding: 5px;">66.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">16.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">50.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">50.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">45.9</td>
+                        <td style="color: var(--text-color); padding: 5px;">29.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">41.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">41.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">28.2</td>
                     </tr>
                     <tr>
-                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R0)</b></td>
-                        <td style="color: var(--text-color); padding: 6px;">66.7</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">91.7</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>91.7</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">50.0</td>
-                        <td style="color: var(--text-color); padding: 6px;">75.0</td>
-                        <td style="color: var(--text-color); padding: 6px;">33.3</td>
-                        <td style="color: var(--text-color); padding: 6px;">33.3</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">88.5</td>
-                        <td style="color: var(--text-color); padding: 6px;">25.0</td>
-                        <td style="color: var(--text-color); padding: 6px;">45.0</td>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">OpenVLA</td>
+                        <td style="color: var(--text-color); padding: 5px;">4.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">12.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">8.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">33.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">14.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">4.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">1.0</td>
                     </tr>
                     <tr>
-                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R1)</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">75.0</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">91.7</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">87.5</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">50.0</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">76.1</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">66.7</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">37.5</td>
-                        <td style="color: var(--text-color); padding: 6px;">79.2</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">37.5</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">55.2</td>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">RT-1-X</td>
+                        <td style="color: var(--text-color); padding: 5px;">16.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">8.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">20.8</td>
+                        <td style="color: var(--text-color); padding: 5px;">11.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">4.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">1.1</td>
                     </tr>
                     <tr>
-                        <td style="color: var(--text-color); padding: 6px; font-size: 14px;"><b><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> (R2)</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">87.5</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>95.8</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>91.7</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;"><b>91.6</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;">91.7</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>90.1</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #D6D4FF;">52.6</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #EBF4FF;">84.8</td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>89.0</b></td>
-                        <td style="color: var(--text-color); padding: 6px; background: #63D3B0;"><b>79.1</b></td>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Flower</td>
+                        <td style="color: var(--text-color); padding: 5px;">--</td>
+                        <td style="color: var(--text-color); padding: 5px;">--</td>
+                        <td style="color: var(--text-color); padding: 5px;">--</td>
+                        <td style="color: var(--text-color); padding: 5px;">--</td>
+                        <td style="color: var(--text-color); padding: 5px;">--</td>
+                        <td style="color: var(--text-color); padding: 5px;">71.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">8.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">88.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">13.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">45.0</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">DB-MemVLA</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>91.7</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">83.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">79.2</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>100.0</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">88.6</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">85.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">57.6</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>100.0</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">50.0</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">73.2</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">X-VLA</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>95.8</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">79.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">62.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">75.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">78.1</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>91.7</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">37.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">62.5</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">70.8</td>
+                        <td style="color: var(--text-color); padding: 5px;">65.6</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Magma</td>
+                        <td style="color: var(--text-color); padding: 5px;">70.8</td>
+                        <td style="color: var(--text-color); padding: 5px;">75.0</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">91.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">37.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">68.8</td>
+                        <td style="color: var(--text-color); padding: 5px;">54.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">29.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">83.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">33.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">50.0</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">GR00T-N1.6</td>
+                        <td style="color: var(--text-color); padding: 5px;">58.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">20.8</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>100.0</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">54.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">58.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">41.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">0.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">62.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">33.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">34.4</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">EO-1</td>
+                        <td style="color: var(--text-color); padding: 5px;">-</td>
+                        <td style="color: var(--text-color); padding: 5px;">-</td>
+                        <td style="color: var(--text-color); padding: 5px;">-</td>
+                        <td style="color: var(--text-color); padding: 5px;">-</td>
+                        <td style="color: var(--text-color); padding: 5px;">-</td>
+                        <td style="color: var(--text-color); padding: 5px;">63.6</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>81.8</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">90.9</td>
+                        <td style="color: var(--text-color); padding: 5px;">54.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">72.7</td>
+                    </tr>
+                    <tr>
+                        <td colspan="11" style="color: var(--text-color); padding: 6px; padding-left: 15px; font-size: 12px; text-align: left; font-weight: bold; border-top: 1px solid var(--border-color);">
+                            <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-style: italic;">(Paligemma 3B)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Green-VLA(R0)</td>
+                        <td style="color: var(--text-color); padding: 5px;">66.7</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">91.7</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">91.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">50.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">75.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">33.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">33.3</td>
+                        <td style="color: var(--text-color); padding: 5px;">88.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">25.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">45.0</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Green-VLA(R1)</td>
+                        <td style="color: var(--text-color); padding: 5px;">75.0</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">91.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">87.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">50.0</td>
+                        <td style="color: var(--text-color); padding: 5px;">76.1</td>
+                        <td style="color: var(--text-color); padding: 5px;">66.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">37.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">79.2</td>
+                        <td style="color: var(--text-color); padding: 5px;">37.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">55.2</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Green-VLA(R2)</td>
+                        <td style="color: var(--text-color); padding: 5px;">87.5</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>95.8</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">91.7</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>91.6</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>91.7</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>90.1</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">52.6</td>
+                        <td style="color: var(--text-color); padding: 5px;">84.8</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>89.0</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>79.1</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="11" style="color: var(--text-color); padding: 6px; padding-left: 15px; font-size: 12px; text-align: left; font-weight: bold; border-top: 1px solid var(--border-color);">
+                            <span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-style: italic;">(Qwen3-VL-4B-Instruct)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Green-VLA(R1)</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>91.7</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">91.7</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>100.0</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">75.0</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>89.6</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">79.2</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">58.3</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">91.7</td>
+                        <td style="color: var(--text-color); padding: 5px;">62.5</td>
+                        <td style="color: var(--text-color); padding: 5px;">72.9</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-color); padding: 5px; font-size: 12px; text-align: left; padding-left: 15px;">Green-VLA(R2)</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">90.6</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>99.0</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>99.0</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">89.6</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>94.6</b></td>
+                        <td style="color: var(--text-color); padding: 5px;">80.2</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">70.8</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #D6D4FF;"><b>94.8</b></td>
+                        <td style="color: var(--text-color); padding: 5px; background: #EBF4FF;">76.1</td>
+                        <td style="color: var(--text-color); padding: 5px; background: #63D3B0;"><b>80.5</b></td>
                     </tr>
                 </tbody>
             </table>
@@ -356,26 +619,30 @@
             <br>
 
             <h3>CALVIN Benchmark: Average Chain Length</h3>
-            <table style="border-collapse: collapse; width: 70%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
+            <table style="border-collapse: collapse; width: 100%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
                 <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color);">
                     CALVIN ABC→D: Average Chain Length (ACL) Comparison
                 </caption>
                 <thead>
                     <tr>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Metric</th>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">π<sub>0</sub> R1</th>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> R1</th>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Flower R1</th>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> R2</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px; vertical-align: top;">Metric</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px; vertical-align: top;">π<sub>0</sub> R1</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px; vertical-align: top;"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> R1<br><span style="font-size: 10px; font-weight: normal; font-style: italic;">(Paligemma 3B)</span></th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px; vertical-align: top;"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> R1<br><span style="font-size: 10px; font-weight: normal; font-style: italic;">(Qwen3-VL-4B)</span></th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px; vertical-align: top;">Flower R1</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px; vertical-align: top;"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> R2<br><span style="font-size: 10px; font-weight: normal; font-style: italic;">(Qwen3-VL-4B)</span></th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px; vertical-align: top;"><span class="green-vla"><span class="green">Green</span><span class="purple">-VLA</span></span> R2<br><span style="font-size: 10px; font-weight: normal; font-style: italic;">(Paligemma 3B)</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td style="color: var(--text-color); padding: 8px; font-weight: bold;">ACL</td>
-                        <td style="color: var(--text-color); padding: 8px;">3.6</td>
-                        <td style="color: var(--text-color); padding: 8px; background: #EBF4FF;">4.18</td>
-                        <td style="color: var(--text-color); padding: 8px; background: #D6D4FF;">4.53</td>
-                        <td style="color: var(--text-color); padding: 8px; background: #63D3B0;"><b>4.63</b></td>
+                        <td style="color: var(--text-color); padding: 16px 12px; font-weight: bold;">ACL</td>
+                        <td style="color: var(--text-color); padding: 16px 12px;">3.6</td>
+                        <td style="color: var(--text-color); padding: 16px 12px;">4.18</td>
+                        <td style="color: var(--text-color); padding: 16px 12px;">4.27</td>
+                        <td style="color: var(--text-color); padding: 16px 12px; background: #EBF4FF;">4.53</td>
+                        <td style="color: var(--text-color); padding: 16px 12px; background: #D6D4FF;"><b>4.57</b></td>
+                        <td style="color: var(--text-color); padding: 16px 12px; background: #63D3B0;"><b>4.63</b></td>
                     </tr>
                 </tbody>
             </table>
@@ -384,30 +651,30 @@
             <br>
 
             <h3>Humanoid (Green Robot): Task Success Rates</h3>
-            <table style="border-collapse: collapse; width: 95%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
+            <table style="border-collapse: collapse; width: 100%; margin: auto; text-align: center; background: var(--code-bg); padding: 12px; border-radius: 8px;">
                 <caption style="caption-side: top; font-weight: bold; margin-bottom: 6px; color: var(--text-color);">
                     Humanoid instruction-conditioned manipulation success rates (%)
                 </caption>
                 <thead>
                     <tr>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Pick [item]</th>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Place in [basket]</th>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Pick [item] from [basket]</th>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Give [item] to user</th>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Hand over [item]</th>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px;">Clean full [table]</th>
-                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 10px 8px; font-weight: bold;">Average</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px;">Pick [item]</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px;">Place in [basket]</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px;">Pick [item] from [basket]</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px;">Give [item] to user</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px;">Hand over [item]</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px;">Clean full [table]</th>
+                        <th style="border-bottom: 2px solid var(--border-color); color: var(--text-color); padding: 14px 12px; font-weight: bold;">Average</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td style="color: var(--text-color); padding: 8px;">98</td>
-                        <td style="color: var(--text-color); padding: 8px;">100</td>
-                        <td style="color: var(--text-color); padding: 8px;">77</td>
-                        <td style="color: var(--text-color); padding: 8px;">99</td>
-                        <td style="color: var(--text-color); padding: 8px;">84</td>
-                        <td style="color: var(--text-color); padding: 8px;">87</td>
-                        <td style="color: var(--text-color); padding: 8px;">90</td>
+                        <td style="color: var(--text-color); padding: 16px 12px;">98</td>
+                        <td style="color: var(--text-color); padding: 16px 12px;">100</td>
+                        <td style="color: var(--text-color); padding: 16px 12px;">77</td>
+                        <td style="color: var(--text-color); padding: 16px 12px;">99</td>
+                        <td style="color: var(--text-color); padding: 16px 12px;">84</td>
+                        <td style="color: var(--text-color); padding: 16px 12px;">87</td>
+                        <td style="color: var(--text-color); padding: 16px 12px;">90</td>
                     </tr>
                 </tbody>
             </table>
