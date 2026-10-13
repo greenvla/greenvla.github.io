@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GreenWAM</title>
+<meta name="description" content="GreenWAM: a world foundation model for robotics. Project page of the technical report.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<style>
+:root {
+  --bg: #f4f5f1; --surface: #ffffff; --surface2: #f6f7f4; --fg: #1e2427; --muted: #46525a; --muted2: #56626b;
+  --line: #d6dbd8; --line2: #e3e7e4; --accent: #2a817b; --accent-bar: #2a817b; --accent-soft: #8cc7c1; --accent-deep: #0f3d39;
+  --brand-g: #13946a; --brand-w: #6c63ff; --track: #f0f2ef; --other: #b9c2c7; --other2: #7d8a92; --other3: #c4ccd0;
+  --grid: rgba(30,36,39,.06); --btn: #ffffff; --btn-line: #cfd6d3; --btn-on: #1e2427; --btn-on-fg: #ffffff; --head: rgba(244,245,241,.94);
+  --p-bg: #10161a; --p-line: #27313a; --p-fg: #e8edeb; --p-muted: #c9d2d6; --p-dim: #8b98a1; --p-track: #1b242a; --p-off: #26313a; --p-mint: #8fd3c6; --p-bar: #2a9d93; --p-other: #4a5862; --p-grid: rgba(255,255,255,.045);
+  --chip: rgba(16,22,26,.74); --chip-fg: #ffffff;
+  --vid: #c2692a; --vid-n: #e39a63; --vid-t: #f3c29c; --st: #3f8f52; --st-n: #7cc48c; --st-t: #bfe6c7; --lang: #4f5fc4; --gold: #e0b44a; --violet: #9aa5f0;
+  --f-sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif; --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-sans); font-size: 16px; -webkit-font-smoothing: antialiased }
+a { color: var(--accent) }
+.m { font-family: var(--f-mono) }
+.lbl { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; margin: 0 }
+.wrap { max-width: 1280px; margin: 0 auto; padding-inline: 32px }
+@media (max-width: 640px) { .wrap { padding-inline: 16px } }
+.sec { padding-block: 72px; display: flex; flex-direction: column; gap: 26px }
+.alt { background: var(--surface); border-block: 1px solid var(--line) }
+.h2 { font-size: clamp(28px, 3.6vw, 44px); line-height: 1.08; letter-spacing: -.03em; font-weight: 600; margin: 0; text-wrap: balance }
+.p { font-size: 17px; line-height: 1.6; color: var(--muted); margin: 0; max-width: 64ch; text-wrap: pretty }
+.cap { font-family: var(--f-mono); font-size: 12.5px; line-height: 1.55; color: var(--muted); margin: 0 }
+.kick { color: var(--accent) }
+.gridbg { background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 24px 24px }
+.panel { background-color: var(--p-bg); background-image: linear-gradient(var(--p-grid) 1px, transparent 1px), linear-gradient(90deg, var(--p-grid) 1px, transparent 1px); background-size: 24px 24px; color: var(--p-fg); border: 1px solid var(--p-line); border-radius: 8px }
+.row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start }
+.col { min-width: 0; display: flex; flex-direction: column; gap: 10px }
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--head); border-bottom: 1px solid var(--line); backdrop-filter: blur(6px) }
+header.top nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 22px; padding-block: 4px }
+.nav { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-decoration: none; padding: 12px 0; display: inline-block }
+.nav:hover { color: var(--fg) }
+.brand { text-decoration: none; font-weight: 700; letter-spacing: -.02em }
+.g { color: var(--brand-g) } .w { color: var(--brand-w) }
+.btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 4px; border: 1px solid var(--fg); font-family: var(--f-mono); font-size: 13px; letter-spacing: .04em; text-decoration: none; color: var(--fg); background: var(--btn); cursor: pointer }
+.btn.pri { background: var(--btn-on); color: var(--btn-on-fg); border-color: var(--btn-on) }
+.btn:hover { filter: brightness(.96) }
+.theme { min-height: 36px; padding: 0 12px; font-size: 11.5px }
+.seg { font-family: var(--f-mono); font-size: 12.5px; min-height: 36px; padding: 0 12px; border-radius: 4px; border: 1px solid var(--p-line); background: transparent; color: var(--p-muted); cursor: pointer; text-align: left; transition: background .15s, color .15s }
+.seg[aria-pressed="true"], .seg[aria-selected="true"] { background: var(--p-fg); color: var(--p-bg); border-color: var(--p-fg) }
+.segl { font-family: var(--f-mono); font-size: 12.5px; min-height: 36px; padding: 0 12px; border-radius: 4px; border: 1px solid var(--btn-line); background: var(--btn); color: var(--fg); cursor: pointer; transition: background .15s, color .15s }
+.segl[aria-pressed="true"] { background: var(--btn-on); color: var(--btn-on-fg); border-color: var(--btn-on) }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.tok { font-family: var(--f-mono); font-size: 13px; height: 34px; min-width: 40px; padding: 0 8px; display: flex; align-items: center; justify-content: center; border-radius: 5px; transition: all .25s }
+.tok.cv { background: var(--vid); color: #fff } .tok.cs { background: var(--st); color: #fff }
+.tok.nv { border: 1.5px dashed var(--vid-n); color: var(--vid-t); background-color: rgba(194,105,42,.18) }
+.tok.ns { border: 1.5px dashed var(--st-n); color: var(--st-t); background-color: rgba(63,143,82,.18) }
+.tok.av { border: 1.5px solid var(--vid); color: var(--vid-t) } .tok.x { color: #4a5862; border: 1px solid var(--p-line) } .tok.gap { min-width: 12px; padding: 0 }
+.tok.nv, .tok.ns, .noise { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.1) 0 4px, transparent 4px 8px); background-size: 200% 200%; animation: drift 2.4s linear infinite }
+@keyframes drift { from { background-position: 0 0 } to { background-position: 22px 0 } }
+.pulse { animation: pulse 1.6s ease-in-out infinite }
+@keyframes pulse { 0%, 100% { opacity: 1 } 50% { opacity: .35 } }
+.bar { transition: width .45s cubic-bezier(.2,.7,.2,1), background .3s }
+.sw { display: inline-block; width: 13px; height: 13px; border-radius: 3px }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-family: var(--f-mono); font-size: 12px }
+.legend span { display: flex; align-items: center; gap: 6px }
+.media { position: relative; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); background: #0b0f12 }
+.media video, .media img { display: block; width: 100%; height: auto; max-width: 100% }
+.chip { position: absolute; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--chip-fg); background: var(--chip); padding: 4px 8px; border-radius: 3px }
+.chip.us { background: #2a817b }
+.bars { display: flex; flex-direction: column; gap: 6px }
+.brow { display: grid; grid-template-columns: minmax(0, 190px) minmax(0, 1fr) 56px; gap: 12px; align-items: center }
+.brow .n { font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.brow .v { font-family: var(--f-mono); font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums }
+.trk { height: 14px; border-radius: 2px; background: var(--track) } .panel .trk { background: var(--p-track) }
+.trk > i { display: block; height: 100%; border-radius: 2px }
+.strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); border: 1px solid var(--line); background: var(--surface); border-radius: 6px; overflow: hidden }
+.strip a { text-decoration: none; color: var(--fg); padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; border-right: 1px solid var(--line2); border-bottom: 1px solid var(--line2) }
+.strip a:hover { background: var(--surface2) }
+.strip b { font-size: 30px; font-weight: 600; letter-spacing: -.03em; line-height: 1 }
+.box { border: 1px solid var(--line); border-radius: 6px; background: var(--surface); padding: 18px }
+.slot { display: inline-block; width: 26px; height: 26px; border-radius: 4px; transition: background .3s }
+pre.bib { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: var(--f-mono); font-size: 13px; line-height: 1.6 }
+@media (max-width: 640px) { .brow { grid-template-columns: minmax(0, 120px) minmax(0, 1fr) 48px } .h1 { font-size: 56px } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important } }
+
+:root { color-scheme: light; --bg: #ffffff; --surface: #ffffff; --surface2: #f6f7f4; --fg: #1a1f22; --muted: #4a555c; --muted2: #5d6870; --line: #e2e6e2; --line2: #eceee9;
+  --p-bg: #ffffff; --p-line: #dfe3de; --p-fg: #1a1f22; --p-muted: #3f4a51; --p-dim: #5d6870; --p-track: #e8ebe6; --p-off: #e3e7e3; --p-mint: #1f7a72; --p-bar: #2a9d93; --p-other: #a9b3b8; --p-grid: transparent;
+  --vid-t: #8f4413; --st-t: #275f33; --gold: #8a6100; --violet: #4352b8; --grid: rgba(26,31,34,.04) }
+html, body { background: #ffffff }
+header.top { background: rgba(255,255,255,.94) }
+.panel { background: var(--p-bg); background-image: none; border: 1px solid var(--p-line); color: var(--p-fg) }
+.tok.x { color: #9aa3a8 }
+.colw { max-width: 1040px; margin-inline: auto }
+.sec2 { padding-block: 88px; display: flex; flex-direction: column; gap: 28px; border-top: 1px solid var(--line) }
+.tint { background: var(--bg) }
+.kick2 { font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 }
+.h2b { font-size: clamp(30px, 3.4vw, 42px); line-height: 1.1; letter-spacing: -.025em; font-weight: 600; margin: 6px 0 0; text-wrap: balance }
+.lead2 { font-size: 18px; line-height: 1.65; color: var(--muted); margin: 0; text-wrap: pretty }
+.h3b { font-size: 22px; font-weight: 600; letter-spacing: -.015em; margin: 0 }
+.blk { display: flex; flex-direction: column; gap: 16px }
+.fg { margin: 0 auto; display: flex; flex-direction: column; gap: 12px; align-items: center; width: 100% }
+.fg img { display: block; width: 100%; height: auto; max-width: 100% }
+.fg figcaption { font-size: 14px; line-height: 1.55; color: var(--muted2); text-align: center; max-width: 76ch }
+.fg figcaption b { color: var(--fg); font-weight: 600 }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; align-items: start }
+.pair .fg img { height: 360px; width: auto; max-width: 100%; object-fit: contain }
+.fcbox { position: relative; height: 300px }
+.fcbox img { position: absolute; inset: 0; margin: auto; max-width: 100%; max-height: 100%; border: 1px solid var(--p-line); border-radius: 6px; opacity: 0; transition: opacity .25s ease }
+.fcbox img.on { opacity: 1 }
+@media (prefers-reduced-motion: reduce) { .fcbox img { transition: none } }
+@media (max-width: 760px) { .pair { grid-template-columns: minmax(0, 1fr) } .pair .fg img { height: auto; width: 100% } }
+.qa { border: 1px solid var(--line); border-radius: 10px; background: #ffffff; padding: 26px 28px; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px 24px; text-align: left }
+.qa dt { font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); padding-top: 4px }
+.qa dd { margin: 0; font-size: 16.5px; line-height: 1.6; color: var(--fg) }
+.qa ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; color: var(--muted) }
+@media (max-width: 640px) { .qa { grid-template-columns: minmax(0, 1fr) } }
+.res2 { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 1.6; color: var(--muted); max-width: 76ch }
+.res2 b { color: var(--fg); font-weight: 600 }
+.btn2 { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; background: #1a1f22; color: #fff; font-size: 14.5px; font-weight: 500; text-decoration: none }
+.btn2:hover { background: #2c3439; color: #fff }
+.tour { height: 2px; background: var(--p-line); border-radius: 1px; overflow: hidden }
+.tour i { display: block; height: 100%; width: 100%; background: var(--p-mint); transform-origin: left; transform: scaleX(0) }
+.tour.run i { animation: tick var(--tour, 2.6s) linear both }
+@keyframes tick { to { transform: scaleX(1) } }
+.rv { opacity: .35; transform: translateY(16px) } .rv-on { transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1) }
+.rt9 .media video { transition: transform .5s cubic-bezier(.2,.7,.2,1) } .rt9 .media:hover video { transform: scale(1.04) }
+@media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none } }
+.rclabels { display: none }
+@media (max-width: 640px) { .rcanvas .chip { display: none } .rclabels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; font-family: var(--f-mono); font-size: 10px; line-height: 1.35; letter-spacing: .06em; text-transform: uppercase; color: var(--muted2) } }
+</style>
+</head>
+<body>
+<header class="top"><nav class="wrap" aria-label="Sections">
+  <a class="brand" href="#top" style="font-size:18px"><span class="g">Green</span><span class="w">WAM</span></a>
+  <div style="display:flex;flex-wrap:wrap;gap:0 20px;align-items:center">
+    <a class="nav" href="#recipe">Recipe</a><a class="nav" href="#world">World model</a><a class="nav" href="#policy">Policy</a>
+    <a class="nav" href="#humanoid">Humanoid</a><a class="nav" href="#findings">Findings</a><a class="nav" href="#discussion">Limitations</a>
+  </div></nav></header>
+<main>
+<section id="top"><div class="wrap"><div class="colw" style="padding-block:64px 72px;display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center">
+  <p class="kick2">Technical report · Sber Robotics Center · 2026</p>
+  <h1 style="margin:0;font-size:clamp(52px,7vw,88px);line-height:.95;letter-spacing:-.045em;font-weight:700"><span class="g">Green</span><span class="w">WAM</span></h1>
+  <p style="margin:0;font-size:clamp(20px,2.2vw,28px);font-weight:500;letter-spacing:-.015em">A World Foundation Model for Robotics</p>
+  <p style="margin:0;font-size:16px;line-height:1.6;color:var(--muted)">Gennady Sidorov, Valerii Kornilov, Denis Grankin, Polina Fedotova, Aleksey Postnikov<br>Brain Team, Sber Robotics Center</p>
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px"><a class="btn2" href="#cite">Technical report</a><span class="btn2" aria-disabled="true" style="background:#5d6569;cursor:default">Code<span style="font-size:12px;opacity:.8">soon</span></span><a class="btn2" href="https://huggingface.co/SberRoboticsCenter/models">Model</a><a class="btn2" href="#cite">BibTeX</a></div>
+  <div style="margin-top:22px;width:100%"><figure class="fg"><img src="media/rf_greenwm-overview.jpg" alt="From robot experience to prediction and control." loading="lazy"><figcaption><b>From robot experience to prediction and control.</b> Video, states and text from 20 robot families, a shared anatomical action space and one joint video–action model, used as a world model and as a policy; (g) GreenWAM against the best of three references on every axis.</figcaption></figure></div>
+  <dl class="qa" style="margin-top:22px;width:100%">
+    <dt>Question</dt><dd>Can one robot world model serve both as a world model and as a policy across different bodies, and what makes this work?</dd>
+    <dt>Recipe</dt><dd>GreenWAM, built on Cosmos 3 Edge: (1) a shared anatomical action space that describes 20 robot families in common joint coordinates; (2) joint training on these families in visual, action-conditioned and world–action modes; (3) policies that split an action expert off the generator.</dd>
+    <dt>Results</dt><dd><ul>
+      <li>As a world model: top-tier trajectory, depth and 3D accuracy on WorldArena 1.0, ahead of every world–action model and video generator in our comparison.</li>
+      <li>As a policy: among the top entries of the RoboTwin 2.0 leaderboard, the highest zero-shot LIBERO-plus success among the compared methods, competitive on CALVIN and LIBERO.</li>
+      <li>On a real humanoid: more successful than policies adapted from π0.5 and from Cosmos 3 Edge; distilled into a single-step policy for real-time control.</li>
+      <li>Three findings: robot specialization improves prediction and control together; an action expert helps when split off at the start; world-model modes during adaptation preserve robustness.</li></ul></dd>
+  </dl>
+</div></div></section>
+
+<section id="recipe"><div class="wrap"><div class="colw sec2">
+  <div class="blk" style="gap:10px"><p class="kick2">Recipe</p><h2 class="h2b">One generator for video and robot motion, shared across bodies.</h2><p class="lead2" style="margin-top:8px">GreenWAM maps the states of different robots into shared anatomical coordinates and trains one generator to predict video, robot motion or both; a policy is obtained by splitting an action expert off this generator. It starts from Cosmos 3 Edge 4B, whose mixture-of-transformers backbone couples a reasoner and a generator. Training data: 20 two-armed robot families, 1,688.5 hours, 74 % real; the robotics stage trains for 36,500 optimizer steps.</p></div>
+  <figure class="fg" style="max-width:900px"><img src="media/rf_fig-02-architecture.jpg" alt="GreenWAM architecture," loading="lazy"><figcaption><b>GreenWAM architecture,</b> shown for the world–action mode: the instruction, the multi-camera canvas and the joint state enter a frozen reasoner, a trained generator for the video tokens and, in the adapted policy, an action expert.</figcaption></figure>
+  <div class="blk" style="margin-top:28px"><h3 class="h3b">Shared anatomical action space</h3><p class="lead2">Robot datasets disagree on joint layout, order, units, sign and zero. Layout-specific codecs map native channels to 79 anatomical coordinates that pass through one shared input and output projector: a left-elbow coordinate occupies the same slot on every platform, and no robot has action parameters of its own.</p>
+  <div class="panel" style="padding:20px 22px;display:flex;flex-direction:column;gap:16px;border-radius:10px">
+    <div style="display:flex;flex-direction:column;gap:8px"><p class="lbl" style="color:var(--p-dim)">Explore: the slots each family fills · hours in the corpus</p><div id="famList" role="group" aria-label="Robot family" style="display:flex;flex-wrap:wrap;gap:6px"></div><div class="tour" id="famTour" aria-hidden="true"><i></i></div></div>
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;border-top:1px solid var(--p-line);padding-top:16px"><div id="famView" class="col" style="flex:1.7 1 440px;gap:14px"></div><figure id="famCanvas" class="col" style="flex:1 1 260px;margin:0;gap:8px"></figure></div></div></div>
+  <div class="blk" style="margin-top:28px"><h3 class="h3b">Joint video–action modeling</h3><p class="lead2">A robot clip can answer several questions: what the scene will look like, what the robot will see if it follows a trajectory, which trajectory produced a video, and what to do next. One set of generator weights trains on seven modes; a mode fixes which streams are clean conditions and which are noised targets.</p>
+  <div class="panel" style="display:flex;flex-wrap:wrap;border-radius:10px">
+    <div style="flex:1 1 240px;min-width:0;padding:20px;border-right:1px solid var(--p-line);display:flex;flex-direction:column;gap:10px"><div id="modeList" role="group" aria-label="Training mode" style="display:flex;flex-direction:column;gap:6px"></div><div class="tour" id="modeTour" aria-hidden="true"><i></i></div></div>
+    <div id="modeView" style="flex:2.4 1 480px;min-width:0;padding:22px 24px;display:flex;flex-direction:column;gap:18px"></div></div></div>
+</div></div></section>
+
+<section id="world"><div class="wrap"><div class="colw sec2">
+  <div class="blk" style="gap:10px"><p class="kick2">As a world model</p><h2 class="h2b">It predicts what the cameras will see when the robot moves.</h2><p class="lead2" style="margin-top:8px">Adapted to WorldArena 1.0, a public benchmark of action-conditioned video prediction, GreenWAM has the highest trajectory, depth and 3D accuracy among the compared world–action models and video generators.</p></div>
+  <figure class="fg" style="max-width:900px"><img src="media/rf_fig-benchmarks-worldarena1.png" alt="WorldArena 1.0, track 1:" loading="lazy"><figcaption><b>WorldArena 1.0, track 1:</b> GreenWAM among models of the leaderboard; fidelity to the recorded video on the left, the overall score and categories on the right.</figcaption></figure>
+  <div class="col" style="gap:10px;margin-top:8px"><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between"><div id="waEps" role="group" aria-label="Episode" style="display:flex;gap:6px;flex-wrap:wrap"></div><span class="m" id="waInfo" style="font-size:12px;color:var(--muted2)"></span></div>
+    <div class="media" style="border-radius:8px"><video id="waVideo" src="media/wa_ep944.mp4" poster="media/wa_ep944.jpg" controls data-auto preload="metadata" muted loop playsinline aria-label="WorldArena rollout: recording on the left, GreenWAM on the right"></video><span class="chip" style="left:10px;top:10px">Recording</span><span class="chip us" style="left:calc(50% + 10px);top:10px">GreenWAM</span></div>
+    <p class="fg" style="margin:0"><span style="font-size:14px;color:var(--muted2);text-align:center">Only the first frame comes from the recording; the rest of the episode is predicted from the robot's actions.</span></p></div>
+</div></div></section>
+
+<section id="policy" class="tint"><div class="wrap"><div class="colw sec2">
+  <div class="blk" style="gap:10px"><p class="kick2">As a policy</p><h2 class="h2b">The same generator becomes a policy by splitting off an action expert.</h2><p class="lead2" style="margin-top:8px">For policy adaptation, action tokens move to a dedicated transformer while video tokens stay in the generator; joint attention connects the two streams at every layer. The policy predicts future video together with the state trajectory, executes a prefix and replans.</p></div>
+  <div class="blk"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center"><h3 class="h3b">The video the policy predicts with each action chunk</h3><div id="dreamTabs" role="tablist" aria-label="Rollouts" style="display:flex;flex-wrap:wrap;gap:6px"></div></div>
+    <div class="media" style="display:flex;justify-content:center;background:#0b0f12;border-radius:8px"><video id="dreamVideo" src="media/dream_id_c.mp4" poster="media/dream_id_c.jpg" controls data-auto preload="metadata" muted loop playsinline aria-label="RoboTwin rollouts with the predicted video" style="max-height:600px;width:auto;max-width:100%"></video></div>
+    <p style="margin:0;font-size:14px;color:var(--muted2);text-align:center" id="dreamCap"></p></div>
+  <div class="blk" style="margin-top:28px"><h3 class="h3b">Simulation benchmarks</h3>
+    <ul class="res2">
+      <li><b>RoboTwin 2.0.</b> 86.98 % clean and 48.10 % randomized success, 67.54 % on average, over 50 tasks with 100 trials per task: among the top entries of the leaderboard.</li>
+      <li><b>LIBERO and LIBERO-plus.</b> With one policy, close to the dedicated policies on LIBERO and the highest zero-shot LIBERO-plus success in the comparison, although the single-arm Franka is absent from the corpus.</li>
+      <li><b>CALVIN.</b> 4.64 instructions per chain on average, above FLOWER (4.53).</li>
+      <li><b>RoboDojo.</b> Trained on the official training set and compared with the official leaderboard: a score of 16.12 and a success rate of 10.49 %, higher on both aggregates than π0.5, X-VLA and X-WAM.</li></ul>
+    <figure class="fg" style="max-width:860px"><img src="media/rf_fig-benchmarks-manipulation.png" alt="Manipulation benchmarks." loading="lazy"><figcaption><b>Manipulation benchmarks.</b> GreenWAM (first bar of each panel) and selected baselines. No RoboTwin, RoboDojo, CALVIN or LIBERO data enter the GreenWAM corpus.</figcaption></figure></div>
+  <div class="blk" style="margin-top:28px"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center"><h3 class="h3b">RoboTwin 2.0 rollouts</h3><div style="display:flex;flex-wrap:wrap;gap:6px"></div></div>
+    <div id="rtGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:14px"></div>
+    <p style="margin:0;font-size:14px;color:var(--muted2);text-align:center">Successful episodes of the reported policy; under each task, its success rate over 100 trials. 3× speed.</p></div>
+</div></div></section>
+
+<section id="humanoid"><div class="wrap"><div class="colw sec2">
+  <div class="blk" style="gap:10px"><p class="kick2">Real-time control on a real humanoid</p><h2 class="h2b">Evaluated on the Green humanoid and distilled to one step.</h2><p class="lead2" style="margin-top:8px">The policy is distilled into a one-step student that answers in 35.4 ms on one RTX 4090, at 28.3 Hz. Teacher and student are evaluated on a packing task: five consecutive instructions without a scene reset, 70 instructions in 14 scene configurations, nine in-distribution and five out-of-distribution.</p></div>
+  <div class="col" style="gap:10px"><div class="rclabels" aria-hidden="true"><span>In-domain</span><span>OOD: light</span><span>OOD: light + appearance</span></div><div class="media rcanvas" style="border-radius:8px"><video src="media/real_canvas.mp4" poster="media/real_canvas.jpg" controls data-auto preload="metadata" muted loop playsinline aria-label="Six runs of the GreenWAM policy before distillation on the Green humanoid, at 1.5× speed: two in the in-distribution scene, two under changed lighting, two under changed lighting and table appearance"></video><span class="chip" style="left:10px;top:10px">In-domain</span><span class="chip" style="left:calc(33.44% + 10px);top:10px">OOD: light</span><span class="chip" style="left:calc(66.87% + 10px);top:10px">OOD: light + appearance</span></div>
+    <p class="fg" style="margin:0"><span style="font-size:14px;color:var(--muted2);text-align:center">The GreenWAM policy before distillation on the Green humanoid, shown at 1.5× speed, two runs per condition: the in-distribution scene, changed lighting, and changed lighting with a new table appearance.</span></p></div>
+  <figure class="fg"><img src="media/rf_fig-real-humanoid.jpg" alt="GreenWAM policy inference on the Green humanoid." loading="lazy"><figcaption><b>GreenWAM policy inference on the Green humanoid.</b> One continuous episode: the robot puts a cap and a bottle into a bag, lifts the bag by its handles and hands it to a person.</figcaption></figure>
+  <figure class="fg" style="max-width:900px"><img src="media/rf_fig-humanoid-success.png" alt="Instruction success on the Green humanoid." loading="lazy"><figcaption><b>Instruction success on the Green humanoid.</b> In-distribution and out-of-distribution success of the four policies.</figcaption></figure>
+</div></div></section>
+
+<section id="findings" class="tint"><div class="wrap"><div class="colw sec2">
+  <div class="blk" style="gap:10px"><p class="kick2">What makes it work</p><h2 class="h2b">Three controlled comparisons.</h2><p class="lead2" style="margin-top:8px">Each comparison changes one choice and keeps the downstream data and the adaptation budget fixed.</p></div>
+  <figure class="fg" style="max-width:900px"><img src="media/rf_fig-ablations.png" alt="Controlled comparisons at a fixed budget." loading="lazy"><figcaption><b>Controlled comparisons at a fixed budget.</b> Paired differences; the sign is the choice made in GreenWAM minus the alternative.</figcaption></figure>
+  <ul class="res2">
+    <li><b>Robot specialization improves prediction and control together.</b> Starting from GreenWAM rather than Cosmos 3 Edge at the same budget, the WorldArena model is closer to the recording in 87.1 % of episodes and the RoboTwin policy succeeds 5.4 points more often.</li>
+    <li><b>An action expert helps when split off at the start.</b> It raises RoboTwin success by 3.3 points, with almost equal validation losses.</li>
+    <li><b>World-model modes during adaptation preserve robustness.</b> Keeping forward prediction and image-to-video at a tenth of the training examples raises randomized success by 8.0 points, with gains on 31 of the 50 tasks.</li></ul>
+  <div class="blk" style="margin-top:28px"><h3 class="h3b">What the policy imagines</h3>
+    <p class="lead2">The policy predicts the video of each action chunk together with the actions; decoding these predictions at every replanning step shows what it expects to happen. The final RoboTwin policy is evaluated on all 50 tasks, 974 episodes, in clean scenes that match the adaptation demonstrations and in randomized scenes with new backgrounds, clutter, lighting and table heights. In clean scenes the imagination is accurate: in successful episodes the predictions beat a baseline that repeats the last observed frame by a median of 9.6 dB of PSNR.</p>
+    <figure class="fg"><img src="media/rf_fig-imagination.jpg" alt="What the RoboTwin policy imagines while it acts." loading="lazy"><figcaption><b>What the RoboTwin policy imagines while it acts.</b> For each episode, the head-camera frame after an action chunk is executed (top) and the frame the policy predicted for the same moment (bottom); LPIPS is the mean over the episode. In the clean failure the policy imagines the outcome of its actions correctly, including the wrong order in which the blocks end; in the randomized failure the imagined scene departs from the executed one.</figcaption></figure>
+    <p class="lead2">Success follows imagination in both settings, but depends on it far more out of distribution. In clean scenes, success stays between 86 % and 96 % up to an episode LPIPS of 0.07; in randomized scenes, it falls from 85 % below 0.03 to 27 % above 0.07. A review of 20 failures in each setting shows the difference: in clean scenes, 19 of 20 failed episodes imagine the executed scene correctly, so the policy foresees what its actions do and still chooses the wrong ones; in randomized scenes, 13 of 20 failures lie in how the policy imagines and reads the changed scene. This is where keeping video prediction during adaptation pays off.</p>
+    <figure class="fg" style="max-width:900px"><img src="media/rf_fig-imagination-error.png" alt="Prediction error and success on RoboTwin 2.0." loading="lazy"><figcaption><b>Prediction error and success on RoboTwin 2.0.</b> LPIPS between the predicted and the executed head-camera frames, averaged over each episode. Left: successful and failed episodes (box: quartiles; line: median). Right: success rate of the episodes grouped by their mean error.</figcaption></figure></div>
+</div></div></section>
+
+<section id="discussion"><div class="wrap"><div class="colw sec2">
+  <div class="blk" style="gap:10px"><p class="kick2">Discussion</p><h2 class="h2b">Limitations</h2><p class="lead2" style="margin-top:8px">The policies remain sensitive to changes in task geometry, such as table height on RoboTwin or the robot's initial configuration on LIBERO-plus: the augmentations used here change observations but add no new motions. Long rollouts continue from the model's own frames, so prediction error accumulates from block to block. Each benchmark is reached through its own post-training, and the real-robot evaluation covers one humanoid and one packing task.</p></div>
+  
+</div></div></section>
+
+<section id="cite" class="tint"><div class="wrap"><div class="colw sec2">
+  <div class="blk" style="gap:10px"><p class="kick2">Citation</p><h2 class="h2b">BibTeX</h2></div>
+  <div style="border:1px solid var(--line);border-radius:10px;padding:20px;background:#ffffff;overflow-x:auto"><pre class="bib" id="bib">@misc{sidorov2026greenwam,
+      title={GreenWAM: A World Foundation Model for Robotics},
+      author={Gennady Sidorov and Valerii Kornilov and Denis Grankin and Polina Fedotova and Aleksey Postnikov},
+      year={2026},
+      url={https://greenvla.github.io/GreenWAM},
+}</pre></div><div><button type="button" class="btn2" data-act="copybib" id="copyBib" style="border:0;cursor:pointer">Copy BibTeX</button></div>
+</div></div></section>
+</main>
+<footer style="background:var(--p-bg);color:var(--p-dim)"><div class="wrap m" style="padding-block:24px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:12px"><span>Brain Team, Sber Robotics Center</span><span>© 2026</span></div></footer>
+
+<script>
+(function () {
+  const ROLES = ["legs.left.hip_pitch", "legs.left.hip_roll", "legs.left.hip_yaw", "legs.left.knee", "legs.left.ankle_pitch", "legs.left.ankle_roll", "legs.right.hip_pitch", "legs.right.hip_roll", "legs.right.hip_yaw", "legs.right.knee", "legs.right.ankle_pitch", "legs.right.ankle_roll", "body.base_pose.x", "body.base_pose.y", "body.base_pose.z", "body.base_pose.qw", "body.base_pose.qx", "body.base_pose.qy", "body.base_pose.qz", "body.base_twist.vx", "body.base_twist.vy", "body.base_twist.vz", "body.base_twist.wx", "body.base_twist.wy", "body.base_twist.wz", "body.torso.yaw", "body.torso.roll", "body.torso.pitch_1", "body.torso.pitch_2", "body.torso.pitch_3", "body.torso.lift", "body.torso.yaw_virtual", "body.head.yaw", "body.head.pitch", "body.head.roll", "arms.left.shoulder_pitch", "arms.left.shoulder_roll", "arms.left.shoulder_yaw", "arms.left.elbow", "arms.left.forearm_roll", "arms.left.wrist_pitch", "arms.left.wrist_yaw", "arms.left.tool_roll", "arms.left.spare", "arms.right.shoulder_pitch", "arms.right.shoulder_roll", "arms.right.shoulder_yaw", "arms.right.elbow", "arms.right.forearm_roll", "arms.right.wrist_pitch", "arms.right.wrist_yaw", "arms.right.tool_roll", "arms.right.spare", "hands.left.thumb_flexion", "hands.left.thumb_opposition", "hands.left.thumb_2", "hands.left.index", "hands.left.index_2", "hands.left.middle", "hands.left.middle_2", "hands.left.ring", "hands.left.ring_2", "hands.left.pinky", "hands.left.pinky_2", "hands.left.aux", "hands.left.gripper", "hands.right.thumb_flexion", "hands.right.thumb_opposition", "hands.right.thumb_2", "hands.right.index", "hands.right.index_2", "hands.right.middle", "hands.right.middle_2", "hands.right.ring", "hands.right.ring_2", "hands.right.pinky", "hands.right.pinky_2", "hands.right.aux", "hands.right.gripper"];
+  const FAMS = [["AgiBot G2A", 256.0, 2, "aaaaaaaaaaaafffmmmmaaaaaafffffaaffffffffffaafffffffaaaaaaaaaaaaaafaaaaaaaaaaaaf"], ["Piper / Cobot Magic", 227.2, 3, "aaaaaaaaaaaafffffffaaaaaaaaaaaaaaaaffafffafaffafffafaaaaaaaaaaaaafaaaaaaaaaaaaf"], ["Green humanoid", 214.8, 2, "ffffffffffffaaaaaaafffffffffaaffffafffffffaafffffffaaffafafafafaaaffafafafafaaa"], ["Unitree G1", 204.9, 12, "ffffffffffffaaaaaaaaaaaaafffaaaaaaafffffffaafffffffaaffffffffafaafffffffffafaaf"], ["AgiBot G1 / Genie-1", 148.5, 2, "aaaaaaaaaaaafffffffaaaaaaaafaafaffaffffffafaffffffafaaaaaaaaaaaaafaaaaaaaaaaaaf"], ["ARX R5a / Lift-2", 105.8, 1, "aaaaaaaaaaaafffffffaaaaaaaaaaaaaaaaffafafffaffafafffaaaaaaaaaaaaafaaaaaaaaaaaaf"], ["Galaxea R1Lite", 92.6, 3, "aaaaaaaaaaaammmaaaaaaaaaafafffaaaaaffafffafaffafffafaaaaaaaaaaaaffaaaaaaaaaaaff"], ["Fourier GR1T1", 87.9, 1, "ffffffffffffaaaaaaaaaaaaafffaaaaffffffffffaafffffffaaffafafafafaaaffafafafafaaa"], ["Galaxea R1Pro", 82.9, 1, "aaaaaaaaaaaaaaaaaaaaaaaaafafffaaaaafffffffaafffffffaaaaaaaaaaaaaffaaaaaaaaaaaff"], ["Worker / ARX5", 80.3, 2, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaffafafffaffafafffaaaaaaaaaaaaafaaaaaaaaaaaaf"], ["TienKung", 59.3, 2, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafffffffaafffffffaaffafafafafaaaffafafafafaaa"], ["RealMan AIDAL", 57.7, 1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaffffffafaffffffafaaaaaaaaaaaaafaaaaaaaaaaaaf"], ["Leju", 30.0, 1, "ffffffffffffaaaaaaaaaaaaaaaaaaaaffafffffffaafffffffaaffafafafafaaaffafafafafaaa"], ["Unitree H1", 12.5, 1, "ffffffffffffaaaaaaaaaaaaafaaaaaaaaafffffffaafffffffaaffafafafafaaaffafafafafaaa"], ["RoboCOIN Ruantong/A2D", 10.1, 1, "aaaaaaaaaaaaaaaaaaaaaaaaafafaaaaffammmmmmmaammmmmmmaaaaaaaaaaaaaafaaaaaaaaaaaaf"], ["AIRBOT MMK2", 7.8, 1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaffafffafaffafffafaffffffffffffaffffffffffffa"], ["Tianyi", 6.8, 2, "aaaaaaaaaaaaaaaaaaaffffffaaaaaaammmfffffffaafffffffaaaaaaaaaaaaaafaaaaaaaaaaaaf"], ["AlphaBot2", 2.2, 1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafffffffaafffffffaaaaaaaaaaaaaafaaaaaaaaaaaaf"], ["Fourier GR1T2", 0.8, 2, "ffffffffffffaaaaaaaaaaaaafffaaaammmfffffffaafffffffaaffafafafafaaaffafafafafaaa"], ["ManipArena EX001", 0.4, 1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaffafafffaffafafffaaaaaaaaaaaaafaaaaaaaaaaaaf"]];
+  const CANV = {"AgiBot G2A": ["fc_00.jpg", "humanoid", "grippers", 3, "AgiBotWorld-2026"], "Piper / Cobot Magic": ["fc_01.jpg", "two-arm platform", "grippers", 3, "GM100"], "Green humanoid": ["fc_02.jpg", "humanoid", "dexterous hands", 3, "own Green humanoid data, simulation frame"], "Unitree G1": ["fc_03.jpg", "humanoid", "dexterous hands", 3, "Unitree G1 R0"], "AgiBot G1 / Genie-1": ["fc_04.jpg", "two-arm platform", "grippers", 3, "GM100"], "Galaxea R1Lite": ["fc_05.jpg", "two-arm platform", "grippers", 3, "Galaxea Open-World"], "Fourier GR1T1": ["fc_06.jpg", "humanoid", "dexterous hands", 1, "GR00T-Teleop-GR1"], "Galaxea R1Pro": ["fc_07.jpg", "humanoid", "grippers", 3, "Behavior-1k"], "Worker / ARX5": ["fc_08.jpg", "two-arm platform", "grippers", 3, "Worker 20K"], "TienKung": ["fc_09.jpg", "humanoid", "grippers", 1, "RoboMIND"], "RealMan AIDAL": ["fc_10.jpg", "two-arm platform", "grippers", 3, "RoboCOIN"], "Leju": ["fc_11.jpg", "humanoid", "dexterous hands", 3, "RoboCOIN"], "Unitree H1": ["fc_12.jpg", "humanoid", "dexterous hands", 1, "Humanoid Everyday"], "AIRBOT MMK2": ["fc_13.jpg", "humanoid", "dexterous hands", 3, "RoboCOIN"], "Tianyi": ["fc_14.jpg", "humanoid", "dexterous hands", 1, "RoboMIND"], "AlphaBot2": ["fc_15.jpg", "humanoid", "grippers", 3, "RoboCOIN"], "ManipArena EX001": ["fc_16.jpg", "two-arm platform", "grippers", 3, "ManipArena"], "ARX R5a / Lift-2": ["fc_17.jpg", "two-arm platform", "grippers", 3, "InternData-A1"], "RoboCOIN Ruantong/A2D": ["fc_18.jpg", "humanoid", "grippers", 3, "RoboCOIN"], "Fourier GR1T2": ["fc_19.jpg", "humanoid", "dexterous hands", 1, "GR00T-Teleop-GR1"]};
+  const CANV_MISSING = {"ARX R5a / Lift-2": "source archived", "RoboCOIN Ruantong/A2D": "no rendered canvas", "Fourier GR1T2": "0.8 h"};
+  const S = { mode: 4, fam: 2, waEp: 944, af: 'base', waM: 'traj', bench: 'robotwin', bm: {}, lat: 6, abl: 'mean', hum: 0, playing: true };
+  const US = 'GreenWAM';
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const pct = (v, lo, hi) => Math.max(0.5, Math.min(100, (v - lo) / (hi - lo) * 100)).toFixed(2) + '%';
+  const seg = (cls, act, val, label, on, extra) => `<button type="button" class="${cls}" data-act="${act}" data-v="${esc(val)}" aria-pressed="${on}"${extra || ''}>${label}</button>`;
+  const bar = (name, v, w, bg, us, fc) => `<div class="brow"><span class="n" style="font-weight:${us ? 600 : 400};color:${fc}">${esc(name)}</span><div class="trk"><i class="bar" style="width:${w};background:${bg}"></i></div><span class="v" style="color:${fc}">${v}</span></div>`;
+
+  const t = (l, k) => [l, k];
+  const NONE = [t('—', 'x')];
+  const MODES = [
+    ['Text-to-video', '20 %', 'world model', [t('ṽ₀', 'nv'), t('ṽ₁', 'nv'), t('ṽ₂', 'nv'), t('⋯', 'nv'), t('ṽN', 'nv')], NONE, 'text → subtask video'],
+    ['Image-to-video', '10 %', 'world model', [t('v₀', 'cv'), t('ṽ₁', 'nv'), t('ṽ₂', 'nv'), t('⋯', 'nv'), t('ṽN', 'nv')], NONE, '+ first frame → video'],
+    ['Forward dynamics', '15 %', 'world model · action-conditioned', [t('v₀', 'cv'), t('ṽ₁', 'nv'), t('ṽ₂', 'nv'), t('⋯', 'nv'), t('ṽN', 'nv')], [t('q₀', 'cs'), t('Δq₁', 'cs'), t('Δq₂', 'cs'), t('⋯', 'cs'), t('ΔqN', 'cs')], 'frame + q₀ + future states → video'],
+    ['Inverse dynamics', '10 %', 'inverse model', [t('v₀', 'cv'), t('v₁', 'cv'), t('v₂', 'cv'), t('⋯', 'cv'), t('vN', 'cv')], [t('q₀', 'ns'), t('q₁', 'ns'), t('q₂', 'ns'), t('⋯', 'ns'), t('qN', 'ns')], 'video → absolute states'],
+    ['World–action (WAM)', '15 %', 'policy', [t('v₀', 'cv'), t('ṽ₁', 'nv'), t('ṽ₂', 'nv'), t('⋯', 'nv'), t('ṽN', 'nv')], [t('q₀', 'cs'), t('Δq₁', 'ns'), t('Δq₂', 'ns'), t('⋯', 'ns'), t('ΔqN', 'ns')], 'frame + q₀ → video and state offsets Δq'],
+    ['Image-to-video, history', '10 %', 'world model · long rollouts', [t('a₁', 'av'), t('a₂', 'av'), t('a₃', 'av'), t('a₄', 'av'), t('', 'gap'), t('ṽ', 'nv'), t('ṽ', 'nv'), t('ṽ', 'nv')], NONE, '4 anchors → next block'],
+    ['Forward dynamics, history', '20 %', 'world model · long rollouts', [t('a₁', 'av'), t('a₂', 'av'), t('a₃', 'av'), t('a₄', 'av'), t('', 'gap'), t('ṽ', 'nv'), t('ṽ', 'nv'), t('ṽ', 'nv')], [t('q₀', 'cs'), t('', 'gap'), t('Δq', 'cs'), t('Δq', 'cs'), t('Δq', 'cs')], '+ q₀ and block states → next block']
+  ];
+  const roleColor = (r) => r === 'policy' ? 'var(--gold)' : (r === 'inverse model' ? 'var(--violet)' : 'var(--p-mint)');
+  const toks = (a) => a.map(([l, k]) => `<span class="tok ${k}">${l}</span>`).join('');
+  function renderModes() {
+    $('modeList').innerHTML = '<p class="lbl" style="color:var(--p-dim);margin-bottom:8px">Mode · share of examples</p>' +
+      MODES.map((m, i) => seg('seg', 'mode', i, `<span>${m[0]}</span><span style="opacity:.8">${m[1]}</span>`, S.mode === i, ' style="display:flex;justify-content:space-between;align-items:center;gap:10px"')).join('');
+    const m = MODES[S.mode];
+    $('modeView').innerHTML = `<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;align-items:baseline"><p style="margin:0;font-size:22px;font-weight:600">${m[0]}</p><p class="lbl" style="color:${roleColor(m[2])}"><span class="pulse" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${roleColor(m[2])};margin-right:8px"></span>${m[2]}</p></div>
+      <div style="display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px 14px;align-items:center">
+        <span class="lbl" style="color:var(--p-dim)">Text</span><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="tok" style="background:var(--lang);color:#fff;padding:0 14px">caption or instruction</span></div>
+        <span class="lbl" style="color:var(--p-dim)">Video</span><div style="display:flex;gap:6px;flex-wrap:wrap">${toks(m[3])}</div>
+        <span class="lbl" style="color:var(--p-dim)">State</span><div style="display:flex;gap:6px;flex-wrap:wrap">${toks(m[4])}</div>
+      </div>
+      <div class="m" style="font-size:14px;border-top:1px solid var(--p-line);padding-top:14px">${m[5]}</div>
+      <div class="legend" style="color:var(--p-dim)"><span><i class="sw" style="background:var(--vid)"></i>clean video</span><span><i class="sw noise" style="border:1.5px dashed var(--vid-n)"></i>noised video target</span><span><i class="sw" style="background:var(--st)"></i>clean state</span><span><i class="sw noise" style="border:1.5px dashed var(--st-n)"></i>noised state target</span><span><i class="sw" style="border:1.5px solid var(--vid)"></i>RGB anchor</span><span>Δq = q − q₀</span></div>`;
+  }
+
+  const GROUPS = [['legs', 0, 12, '#9cc6c1'], ['body', 12, 35, '#6aaaa4'], ['arms', 35, 53, '#2a9d93'], ['hands', 53, 79, '#3fb9a9']];
+  function renderFams() {
+    $('famList').innerHTML = FAMS.map((f, i) => seg('seg', 'fam', i, `${esc(f[0])} <span style="opacity:.65">${f[1] < 10 ? f[1].toFixed(1) : Math.round(f[1])} h</span>`, S.fam === i, ' style="min-height:34px"')).join('');
+    const F = FAMS[S.fam];
+    const cv = CANV[F[0]];
+    const fc = $('famCanvas');
+    if (!renderFams.pre) { renderFams.pre = new IntersectionObserver((es, io) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); Object.values(CANV).forEach((c) => { new Image().src = 'media/' + c[0]; }); } }, { rootMargin: '800px 0px' }); renderFams.pre.observe(fc); }
+    if (!cv) fc.innerHTML = `<div style="border:1px dashed var(--p-line);border-radius:6px;min-height:200px;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center"><span class="m" style="font-size:12px;color:var(--p-dim)">No canvas preview for this family<br>${esc(CANV_MISSING[F[0]] || '')}</span></div>`;
+    else {
+      if (!fc.querySelector('img')) fc.innerHTML = '<div class="fcbox"><img alt=""><img alt=""></div><figcaption class="m" style="font-size:12px;color:var(--p-dim);line-height:1.6"></figcaption>';
+      const [a, b] = fc.querySelectorAll('img'), front = a.classList.contains('on') ? a : b.classList.contains('on') ? b : null, back = front === a ? b : a, src = 'media/' + cv[0];
+      if (!(front && front.getAttribute('src') === src)) {
+        back.src = src;
+        const show = () => { if (FAMS[S.fam] !== F) return; back.alt = `Camera canvas of ${F[0]}: ${cv[3]} camera${cv[3] > 1 ? 's' : ''} composed into one image`; back.classList.add('on'); if (front) front.classList.remove('on');
+          fc.querySelector('figcaption').textContent = `What the model sees: ${cv[3] > 1 ? 'head camera above ' + (cv[3] - 1) + ' other views' : 'one camera'} · ${cv[1]} · ${cv[2]} · ${cv[4]}`; };
+        if (back.complete && back.naturalWidth) show(); else { back.addEventListener('load', show, { once: true }); back.addEventListener('error', show, { once: true }); }
+      }
+    }
+    const cnt = (c) => F[3].split('').filter((x) => x === c).length;
+    $('famView').innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:8px 28px;align-items:baseline"><p style="margin:0;font-size:24px;font-weight:600">${esc(F[0])}</p><p class="m" style="margin:0;font-size:13px;color:var(--p-dim)">${F[1].toFixed(1)} h · ${F[2]} ${F[2] === 1 ? 'layout' : 'layouts'} · <span style="color:var(--p-mint)">${cnt('f')} filled</span> · ${79 - cnt('f')} not filled</p></div>` +
+      GROUPS.map(([g, a, b, col]) => `<div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:start"><span class="lbl" style="color:var(--p-dim);padding-top:4px">${g} ${b - a}</span><div style="display:flex;flex-wrap:wrap;gap:4px">${ROLES.slice(a, b).map((r, j) => { const s = F[3][a + j]; return `<span class="slot" title="${r}${s === 'f' ? '' : ' (not filled)'}" style="${s === 'f' ? 'background:' + col : 'background:#e6e9e5'}"></span>`; }).join('')}</div></div>`).join('') +
+      `<div class="legend" style="color:var(--p-dim);border-top:1px solid var(--p-line);padding-top:14px"><span><i class="sw" style="background:#2a9d93"></i>filled by a named channel</span><span><i class="sw" style="background:#e6e9e5"></i>not filled</span><span>hover a slot for its name</span></div>`;
+  }
+
+  const EPS = { 944: ['open the flap', '24', '21.8'], 213: ['move the bottles', '22', '21.5'] };
+  function renderWA() {
+    $('waEps').innerHTML = [944, 213].map((id) => seg('segl', 'waep', id, `ep ${id} · ${EPS[id][0]}`, S.waEp === id)).join('');
+    $('waInfo').textContent = `${EPS[S.waEp][1]} s · blocks of about 7 s · PSNR ${EPS[S.waEp][2]} dB`;
+  }
+  const RT9 = [
+    ['id_stack_blocks_three_clean', 'clean', 'stack blocks three', 91, 464, 134], ['id_blocks_ranking_size_clean', 'clean', 'rank blocks by size', 51, 455, 124],
+    ['id_hanging_mug_clean', 'clean', 'hang the mug', 32, 292, 88], ['ood_place_dual_shoes_randomized', 'randomized', 'place two shoes', 59, 243, 74],
+    ['ood_open_microwave_randomized', 'randomized', 'open the microwave', 46, 344, 68],
+    ['ood_handover_block_randomized', 'randomized', 'hand over the block', 20, 271, 73]
+  ];
+  S.rtf = 'all'; S.rts = 3;
+  $('rtGrid').innerHTML = RT9.map(([k, mode, task, sr, steps, sec]) => `<figure class="col rt9" data-mode="${mode}" style="margin:0;gap:6px">
+      <div class="media"><video src="media/rt9_${k}.mp4" poster="media/rt9_${k}.jpg" muted loop playsinline preload="none" aria-label="RoboTwin, ${task}, ${mode} scene"></video><span class="chip ${mode === 'clean' ? '' : 'us'}" style="left:8px;top:8px;${mode === 'clean' ? '' : 'background:#b5571c'}">${mode}</span></div>
+      <figcaption style="display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span style="font-size:14px;font-weight:600">${task}</span><span class="m" style="font-size:11.5px;color:var(--muted2);white-space:nowrap">${sr} % of 100 · ${steps} steps · ${sec} s</span></figcaption></figure>`).join('');
+  const rtVids = [...document.querySelectorAll('#rtGrid video')];
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver((es) => es.forEach((e) => { const v = e.target; if (e.isIntersecting && !v.closest('[hidden]')) { v.playbackRate = S.rts; v.play().catch(() => {}); } else v.pause(); }), { threshold: 0.35 }) : null;
+  rtVids.forEach((v) => { if (io) io.observe(v); else { v.preload = 'auto'; v.autoplay = true; } });
+  const variants = (main, list) => list.map(([src, poster], i) => { if (i === 0) return main; const v = main.cloneNode(false); v.removeAttribute('id'); v.src = src; v.poster = poster; v.style.display = 'none'; main.parentElement.insertBefore(v, main.nextSibling); return v; });
+  const dreamVids = variants($('dreamVideo'), [['media/dream_id_c.mp4', 'media/dream_id_c.jpg'], ['media/dream_ood_c.mp4', 'media/dream_ood_c.jpg'], ['media/dream_fails_c.mp4', 'media/dream_fails_c.jpg']]);
+  const waVids = variants($('waVideo'), [['media/wa_ep944.mp4', 'media/wa_ep944.jpg'], ['media/wa_ep213.mp4', 'media/wa_ep213.jpg']]);
+  const autoVids = [...document.querySelectorAll('video[autoplay], video[data-auto]')];
+  const playVid = (v) => { v.muted = true; const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+  if ('IntersectionObserver' in window) {
+    const io2 = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) playVid(e.target); else e.target.pause(); }), { threshold: 0.2 });
+    autoVids.forEach((v) => io2.observe(v));
+  } else autoVids.forEach(playVid);
+  if ('IntersectionObserver' in window) {
+    const warm = (v) => { if (v.preload !== 'auto') { v.preload = 'auto'; if (v.readyState === 0) v.load(); } };
+    const pio = new IntersectionObserver((es, o) => es.forEach((e) => { if (!e.isIntersecting) return; o.unobserve(e.target); (e.target === dreamVids[0] ? dreamVids : e.target === waVids[0] ? waVids : [e.target]).forEach(warm); }), { rootMargin: '150% 0px' });
+    document.querySelectorAll('video').forEach((v) => { if (v.style.display !== 'none') pio.observe(v); });
+  }
+  function renderRT() {
+    document.querySelectorAll('#rtGrid .rt9').forEach((f) => { f.hidden = S.rtf !== 'all' && f.dataset.mode !== S.rtf; if (f.hidden) f.querySelector('video').pause(); });
+    rtVids.forEach((v) => { v.playbackRate = S.rts; });
+  }
+
+
+
+  const DREAMS = {
+    id: ['media/dream_id_c.mp4', 'media/dream_id_c.jpg', 'Clean scenes', 'Stack bowls three, stack blocks three, rank blocks by size. Top: the simulator; bottom: the video the policy predicts with each action chunk. 2× speed.'],
+    ood: ['media/dream_ood_c.mp4', 'media/dream_ood_c.jpg', 'Randomized scenes', 'Three tasks in randomized scenes. 2× speed.'],
+    fail: ['media/dream_fails_c.mp4', 'media/dream_fails_c.jpg', 'Failed episodes', 'Place the phone on the stand and stamp the seal in clean scenes, place the object on the stand in a randomized scene; all three end at the step limit. 2× speed.']
+  };
+  S.dream = 'id';
+  function renderDream() {
+    $('dreamTabs').innerHTML = Object.keys(DREAMS).map((k) => `<button type="button" role="tab" class="segl" data-act="dream" data-v="${k}" aria-pressed="${S.dream === k}">${DREAMS[k][2]}</button>`).join('');
+    const d = DREAMS[S.dream], keys = Object.keys(DREAMS);
+    dreamVids.forEach((v, i) => { const on = keys[i] === S.dream; v.style.display = on ? '' : 'none'; if (!on) v.pause(); });
+    $('dreamCap').textContent = d[3];
+  }
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tours = { mode: { on: true, n: MODES.length, ms: 2600, render: renderModes, bar: 'modeTour' }, fam: { on: true, n: FAMS.length, ms: 2200, render: renderFams, bar: 'famTour' } };
+  const vis = { mode: false, fam: false };
+  const tourBar = (t) => { const el = $(t.bar); el.style.setProperty('--tour', t.ms + 'ms'); el.classList.remove('run'); void el.offsetWidth; if (t.on && !RM) el.classList.add('run'); };
+  if ('IntersectionObserver' in window) {
+    const tio = new IntersectionObserver((es) => es.forEach((e) => { vis[e.target.dataset.tour] = e.isIntersecting; }), { threshold: 0.3 });
+    $('modeList').dataset.tour = 'mode'; $('famList').dataset.tour = 'fam'; tio.observe($('modeList')); tio.observe($('famList'));
+  }
+  if (!RM) for (const [k, t] of Object.entries(tours)) setInterval(() => { if (t.on && vis[k]) { S[k] = (S[k] + 1) % t.n; t.render(); tourBar(t); } }, t.ms);
+  if ('IntersectionObserver' in window && !RM) {
+    const blocks = [...document.querySelectorAll('main .sec2 > *')].filter((el) => el.getBoundingClientRect().top > innerHeight);
+    blocks.forEach((el) => el.classList.add('rv'));
+    const rio = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return; const el = e.target; rio.unobserve(el); el.classList.add('rv-on'); el.classList.remove('rv');
+      el.querySelectorAll('.bar').forEach((b) => { const w = b.style.width; b.style.width = '0'; b.getBoundingClientRect(); b.style.width = w; });
+    }), { threshold: 0.06 });
+    blocks.forEach((el) => rio.observe(el));
+  }
+  const R = { mode: renderModes, fam: renderFams, waep: renderWA, rtf: renderRT, rts: renderRT, dream: renderDream };
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-act]'); if (!el) return;
+    const act = el.dataset.act, v = el.dataset.v;
+    if (act === 'mode' || act === 'fam') { S[act] = +v; tours[act].on = false; tourBar(tours[act]); }
+    else if (act === 'rtf') S.rtf = v; else if (act === 'rts') S.rts = +v; else if (act === 'dream') S.dream = v;
+    else if (act === 'waep') { S.waEp = +v; waVids.forEach((x, i) => { const on = [944, 213][i] === S.waEp; x.style.display = on ? '' : 'none'; if (!on) x.pause(); }); }
+    else if (act === 'copybib') { const txt = $('bib').textContent; const done = () => { el.textContent = 'Copied'; setTimeout(() => { el.textContent = 'Copy BibTeX'; }, 1600); };
+      try { navigator.clipboard.writeText(txt).then(done, () => { const r = document.createRange(); r.selectNodeContents($('bib')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }); } catch (err) { } return; }
+    if (R[act]) R[act]();
+  });
+  renderModes(); renderFams(); renderWA(); renderRT(); renderDream();
+  if (!RM) { tourBar(tours.mode); tourBar(tours.fam); }
+})();
+</script>
+</body>
+</html>
